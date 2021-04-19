@@ -19,20 +19,20 @@ func TestBuildCustomDeck(t *testing.T) {
 func TestRemainingCardsFromACustomDeck(t *testing.T) {
 	standardCardsSize := 52
 	customDeck := newDeck("AS", "KD", "AC")
-	expectedRemainingCards := (standardCardsSize - len(customDeck.cards.code))
+	expectedRemainingCards := (standardCardsSize - 3)
 
 	assertDeckRemainingCards(t, customDeck, expectedRemainingCards)
 }
 
-func assertDeckLength(t *testing.T, deck deckReturn, want int) {
+func assertDeckLength(t *testing.T, deck deck, want int) {
 	t.Helper()
-	got := len(deck.cards.code)
+	got := len(deck.cards)
 	if got != want {
 		t.Errorf("expected deck of size %d, got %d", want, got)
 	}
 }
 
-func assertDeckRemainingCards(t *testing.T, deck deckReturn, want int) {
+func assertDeckRemainingCards(t *testing.T, deck deck, want int) {
 	t.Helper()
 	got := deck.remaining
 	if got != want {

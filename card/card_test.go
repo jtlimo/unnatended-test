@@ -3,20 +3,30 @@ package card
 import "testing"
 
 func TestBuildCard(t *testing.T) {
-	card, err := newCard("QH")
+	card, err := NewCard("QH")
 
-	assertCardBuild(t, card.value, "QUEEN")
-	assertCardBuild(t, card.suit, "HEARTS")
-	assertCardBuild(t, card.code, "QH")
+	assertCardBuild(t, card[0].value, "QUEEN")
+	assertCardBuild(t, card[0].suit, "HEARTS")
+	assertCardBuild(t, card[0].code, "QH")
+	assertError(t, err, "")
+}
+
+func TestBuildMultipleCards(t *testing.T) {
+	card, err := NewCard("QH", "JD")
+
+	assertCardBuild(t, card[0].value, "QUEEN")
+	assertCardBuild(t, card[0].suit, "HEARTS")
+	assertCardBuild(t, card[0].code, "QH")
+
+	assertCardBuild(t, card[1].value, "JACK")
+	assertCardBuild(t, card[1].suit, "DIAMONDS")
+	assertCardBuild(t, card[1].code, "JD")
 	assertError(t, err, "")
 }
 
 func TestBuildCardWhenCodeIsInexistent(t *testing.T) {
-	card, err := newCard("LUI")
+	_, err := NewCard("LUI")
 
-	assertCardBuild(t, card.value, "")
-	assertCardBuild(t, card.suit, "")
-	assertCardBuild(t, card.code, "")
 	assertError(t, err, "Cannot create a card with this code")
 }
 
@@ -25,7 +35,7 @@ func assertCardBuild(t *testing.T, card string, expected string) {
 	got := card
 
 	if got != expected {
-		t.Errorf("expected %v remaining cards, got %v", expected, got)
+		t.Errorf("expected %v card, got %v", expected, got)
 	}
 }
 
