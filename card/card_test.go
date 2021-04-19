@@ -30,6 +30,22 @@ func TestBuildCardWhenCodeIsInexistent(t *testing.T) {
 	assertError(t, err, "Cannot create a card with this code")
 }
 
+func TestBuildCardWithoutCode(t *testing.T) {
+	card, err := NewCard()
+
+	assertCardLength(t, card, 0)
+	assertError(t, err, "")
+}
+
+func assertCardLength(t *testing.T, card []Card, expected int) {
+	t.Helper()
+	got := len(card)
+
+	if got != expected {
+		t.Errorf("expected %v card length, got %v", expected, got)
+	}
+}
+
 func assertCardBuild(t *testing.T, card string, expected string) {
 	t.Helper()
 	got := card
