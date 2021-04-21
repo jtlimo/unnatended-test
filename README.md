@@ -7,15 +7,17 @@ Some problems that I could not resolve in time and improvements I saw in the cod
 
 - I would like to improve my tests, with setup and cleanup the state between tests;
 
+- I would like to make some refactoring to cleanup the method NewDeck, I see some duplication, and I could extract to a method to be more clear;
 
+- About project architecture I would like to separate better the code in main.go to another packages like handlers and so on.
  -->
 
 # Unnantended Test
 
 API to provide the functionalities to create a playing card games with these specifics endpoints
 
-- `/create-deck`
-- `/open-deck`
+- `GET /api/v1/deck/:deckId`
+- `PUT /api/v1/deck` or `PUT /api/v1/deck?cards=AS,KD,AC,2C,KH`
 - `/draw-card`
 
 ## Dependencies
@@ -40,4 +42,4 @@ $ sh test.sh
 $ cd <project_folder>
 $ sh start.sh
 ```
-* Open the browser on `localhost:9091`
+* Open the browser on `localhost:3000`
