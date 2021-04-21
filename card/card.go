@@ -5,71 +5,74 @@ import (
 )
 
 type Card struct {
-	value string
-	suit  string
-	code  string
+	Value string `json:"value"`
+	Suit  string `json:"suit"`
+	Code  string `json:"code"`
+}
+
+type Carder interface {
+	NewCard() *[]Card
 }
 
 var StandardCards = map[string]Card{
-	"AC":  {value: "ACE", suit: "CLUBS", code: "AC"},
-	"2C":  {value: "2", suit: "CLUBS", code: "2C"},
-	"3C":  {value: "3", suit: "CLUBS", code: "3C"},
-	"4C":  {value: "4", suit: "CLUBS", code: "4C"},
-	"5C":  {value: "5", suit: "CLUBS", code: "5C"},
-	"6C":  {value: "6", suit: "CLUBS", code: "6C"},
-	"7C":  {value: "7", suit: "CLUBS", code: "7C"},
-	"8C":  {value: "8", suit: "CLUBS", code: "8C"},
-	"9C":  {value: "9", suit: "CLUBS", code: "9C"},
-	"10C": {value: "10", suit: "CLUBS", code: "10C"},
-	"JC":  {value: "JACK", suit: "CLUBS", code: "JC"},
-	"QC":  {value: "QUEEN", suit: "CLUBS", code: "QC"},
-	"KC":  {value: "KING", suit: "CLUBS", code: "KC"},
-	"AD":  {value: "ACE", suit: "DIAMONDS", code: "AD"},
-	"2D":  {value: "2", suit: "DIAMONDS", code: "2D"},
-	"3D":  {value: "3", suit: "DIAMONDS", code: "3D"},
-	"4D":  {value: "4", suit: "DIAMONDS", code: "4D"},
-	"5D":  {value: "5", suit: "DIAMONDS", code: "5D"},
-	"6D":  {value: "6", suit: "DIAMONDS", code: "6D"},
-	"7D":  {value: "7", suit: "DIAMONDS", code: "7D"},
-	"8D":  {value: "8", suit: "DIAMONDS", code: "8D"},
-	"9D":  {value: "9", suit: "DIAMONDS", code: "9D"},
-	"10D": {value: "10", suit: "DIAMONDS", code: "10D"},
-	"JD":  {value: "JACK", suit: "DIAMONDS", code: "JD"},
-	"QD":  {value: "QUEEN", suit: "DIAMONDS", code: "QD"},
-	"KD":  {value: "KING", suit: "DIAMONDS", code: "KD"},
-	"AH":  {value: "ACE", suit: "HEARTS", code: "AH"},
-	"2H":  {value: "2", suit: "HEARTS", code: "2H"},
-	"3H":  {value: "3", suit: "HEARTS", code: "3H"},
-	"4H":  {value: "4", suit: "HEARTS", code: "4H"},
-	"5H":  {value: "5", suit: "HEARTS", code: "5H"},
-	"6H":  {value: "6", suit: "HEARTS", code: "6H"},
-	"7H":  {value: "7", suit: "HEARTS", code: "7H"},
-	"8H":  {value: "8", suit: "HEARTS", code: "8H"},
-	"9H":  {value: "9", suit: "HEARTS", code: "9H"},
-	"10H": {value: "10", suit: "HEARTS", code: "10H"},
-	"JH":  {value: "JACK", suit: "HEARTS", code: "JH"},
-	"QH":  {value: "QUEEN", suit: "HEARTS", code: "QH"},
-	"KH":  {value: "KING", suit: "HEARTS", code: "KH"},
-	"AS":  {value: "ACE", suit: "SPADES", code: "AS"},
-	"2S":  {value: "2", suit: "SPADES", code: "2S"},
-	"3S":  {value: "3", suit: "SPADES", code: "3S"},
-	"4S":  {value: "4", suit: "SPADES", code: "4S"},
-	"5S":  {value: "5", suit: "SPADES", code: "5S"},
-	"6S":  {value: "6", suit: "SPADES", code: "6S"},
-	"7S":  {value: "7", suit: "SPADES", code: "7S"},
-	"8S":  {value: "8", suit: "SPADES", code: "8S"},
-	"9S":  {value: "9", suit: "SPADES", code: "9S"},
-	"10S": {value: "10", suit: "SPADES", code: "10S"},
-	"JS":  {value: "JACK", suit: "SPADES", code: "JS"},
-	"QS":  {value: "QUEEN", suit: "SPADES", code: "QS"},
-	"KS":  {value: "KING", suit: "SPADES", code: "KS"},
+	"AC":  {Value: "ACE", Suit: "CLUBS", Code: "AC"},
+	"2C":  {Value: "2", Suit: "CLUBS", Code: "2C"},
+	"3C":  {Value: "3", Suit: "CLUBS", Code: "3C"},
+	"4C":  {Value: "4", Suit: "CLUBS", Code: "4C"},
+	"5C":  {Value: "5", Suit: "CLUBS", Code: "5C"},
+	"6C":  {Value: "6", Suit: "CLUBS", Code: "6C"},
+	"7C":  {Value: "7", Suit: "CLUBS", Code: "7C"},
+	"8C":  {Value: "8", Suit: "CLUBS", Code: "8C"},
+	"9C":  {Value: "9", Suit: "CLUBS", Code: "9C"},
+	"10C": {Value: "10", Suit: "CLUBS", Code: "10C"},
+	"JC":  {Value: "JACK", Suit: "CLUBS", Code: "JC"},
+	"QC":  {Value: "QUEEN", Suit: "CLUBS", Code: "QC"},
+	"KC":  {Value: "KING", Suit: "CLUBS", Code: "KC"},
+	"AD":  {Value: "ACE", Suit: "DIAMONDS", Code: "AD"},
+	"2D":  {Value: "2", Suit: "DIAMONDS", Code: "2D"},
+	"3D":  {Value: "3", Suit: "DIAMONDS", Code: "3D"},
+	"4D":  {Value: "4", Suit: "DIAMONDS", Code: "4D"},
+	"5D":  {Value: "5", Suit: "DIAMONDS", Code: "5D"},
+	"6D":  {Value: "6", Suit: "DIAMONDS", Code: "6D"},
+	"7D":  {Value: "7", Suit: "DIAMONDS", Code: "7D"},
+	"8D":  {Value: "8", Suit: "DIAMONDS", Code: "8D"},
+	"9D":  {Value: "9", Suit: "DIAMONDS", Code: "9D"},
+	"10D": {Value: "10", Suit: "DIAMONDS", Code: "10D"},
+	"JD":  {Value: "JACK", Suit: "DIAMONDS", Code: "JD"},
+	"QD":  {Value: "QUEEN", Suit: "DIAMONDS", Code: "QD"},
+	"KD":  {Value: "KING", Suit: "DIAMONDS", Code: "KD"},
+	"AH":  {Value: "ACE", Suit: "HEARTS", Code: "AH"},
+	"2H":  {Value: "2", Suit: "HEARTS", Code: "2H"},
+	"3H":  {Value: "3", Suit: "HEARTS", Code: "3H"},
+	"4H":  {Value: "4", Suit: "HEARTS", Code: "4H"},
+	"5H":  {Value: "5", Suit: "HEARTS", Code: "5H"},
+	"6H":  {Value: "6", Suit: "HEARTS", Code: "6H"},
+	"7H":  {Value: "7", Suit: "HEARTS", Code: "7H"},
+	"8H":  {Value: "8", Suit: "HEARTS", Code: "8H"},
+	"9H":  {Value: "9", Suit: "HEARTS", Code: "9H"},
+	"10H": {Value: "10", Suit: "HEARTS", Code: "10H"},
+	"JH":  {Value: "JACK", Suit: "HEARTS", Code: "JH"},
+	"QH":  {Value: "QUEEN", Suit: "HEARTS", Code: "QH"},
+	"KH":  {Value: "KING", Suit: "HEARTS", Code: "KH"},
+	"AS":  {Value: "ACE", Suit: "SPADES", Code: "AS"},
+	"2S":  {Value: "2", Suit: "SPADES", Code: "2S"},
+	"3S":  {Value: "3", Suit: "SPADES", Code: "3S"},
+	"4S":  {Value: "4", Suit: "SPADES", Code: "4S"},
+	"5S":  {Value: "5", Suit: "SPADES", Code: "5S"},
+	"6S":  {Value: "6", Suit: "SPADES", Code: "6S"},
+	"7S":  {Value: "7", Suit: "SPADES", Code: "7S"},
+	"8S":  {Value: "8", Suit: "SPADES", Code: "8S"},
+	"9S":  {Value: "9", Suit: "SPADES", Code: "9S"},
+	"10S": {Value: "10", Suit: "SPADES", Code: "10S"},
+	"JS":  {Value: "JACK", Suit: "SPADES", Code: "JS"},
+	"QS":  {Value: "QUEEN", Suit: "SPADES", Code: "QS"},
+	"KS":  {Value: "KING", Suit: "SPADES", Code: "KS"},
 }
 var StandardCardsCodes = getStandardCardCodes()
 
 var cards = make([]Card, 0, len(StandardCards))
 
 func NewCard(code ...string) ([]Card, error) {
-	var cards = []Card{}
 	for _, actualCode := range code {
 		if verifyCard(actualCode) {
 			cards = buildCardByCode(actualCode)
@@ -94,9 +97,9 @@ func buildCardByCode(code string) []Card {
 
 	cards = append(cards,
 		Card{
-			value: matchCard.value,
-			suit:  matchCard.suit,
-			code:  code,
+			Value: matchCard.Value,
+			Suit:  matchCard.Suit,
+			Code:  code,
 		})
 	return cards
 
@@ -105,7 +108,7 @@ func buildCardByCode(code string) []Card {
 func getStandardCardCodes() []string {
 	var standardCardsCodes []string
 	for k := range StandardCards {
-		standardCardsCodes = append(standardCardsCodes, StandardCards[k].code)
+		standardCardsCodes = append(standardCardsCodes, StandardCards[k].Code)
 	}
 	return standardCardsCodes
 }

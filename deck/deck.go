@@ -1,36 +1,41 @@
 package deck
 
 import (
-	"main/card"
+	"unnantended/card"
 
 	"github.com/google/uuid"
 )
 
-type deck struct {
-	deck_id   uuid.UUID
-	shuffled  bool
-	remaining int
-	cards     []card.Card
+type Deck struct {
+	Shuffled  bool        `json:"shuffled"`
+	Remaining int         `json:"remaining"`
+	Cards     []card.Card `json:"cards"`
 }
 
-func newDeck(cards ...string) deck {
-	var d deck
+type Decker interface {
+	NewDeck() Deck
+}
+
+var GenerateNewUUID = uuid.NewString
+
+func NewDeck(cards ...string) map[string]Deck {
+	d := make(map[string]Deck)
+	uuid := GenerateNewUUID()
 	var buildCards, _ []card.Card
+
 	if len(cards) > 0 {
 		buildCards, _ = card.NewCard(cards...)
-		d = deck{
-			deck_id:   uuid.New(),
-			shuffled:  false,
-			remaining: remainingCardsFromDeck(card.StandardCardsCodes, cards),
-			cards:     buildCards,
+		d[uuid] = Deck{
+			Shuffled:  false,
+			Remaining: remainingCardsFromDeck(card.StandardCardsCodes, cards),
+			Cards:     buildCards,
 		}
 	} else {
 		buildCards, _ = card.NewCard(card.StandardCardsCodes...)
-		d = deck{
-			deck_id:   uuid.New(),
-			shuffled:  false,
-			remaining: remainingCardsFromDeck(card.StandardCardsCodes, cards),
-			cards:     buildCards,
+		d[uuid] = Deck{
+			Shuffled:  false,
+			Remaining: remainingCardsFromDeck(card.StandardCardsCodes, cards),
+			Cards:     buildCards,
 		}
 	}
 	return d

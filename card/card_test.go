@@ -5,22 +5,22 @@ import "testing"
 func TestBuildCard(t *testing.T) {
 	card, err := NewCard("QH")
 
-	assertCardBuild(t, card[0].value, "QUEEN")
-	assertCardBuild(t, card[0].suit, "HEARTS")
-	assertCardBuild(t, card[0].code, "QH")
+	assertCardBuild(t, card[0].Value, "QUEEN")
+	assertCardBuild(t, card[0].Suit, "HEARTS")
+	assertCardBuild(t, card[0].Code, "QH")
 	assertError(t, err, "")
 }
 
 func TestBuildMultipleCards(t *testing.T) {
 	card, err := NewCard("QH", "JD")
 
-	assertCardBuild(t, card[0].value, "QUEEN")
-	assertCardBuild(t, card[0].suit, "HEARTS")
-	assertCardBuild(t, card[0].code, "QH")
+	assertCardBuild(t, card[0].Value, "QUEEN")
+	assertCardBuild(t, card[0].Suit, "HEARTS")
+	assertCardBuild(t, card[0].Code, "QH")
 
-	assertCardBuild(t, card[1].value, "JACK")
-	assertCardBuild(t, card[1].suit, "DIAMONDS")
-	assertCardBuild(t, card[1].code, "JD")
+	assertCardBuild(t, card[1].Value, "JACK")
+	assertCardBuild(t, card[1].Suit, "DIAMONDS")
+	assertCardBuild(t, card[1].Code, "JD")
 	assertError(t, err, "")
 }
 
