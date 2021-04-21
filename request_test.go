@@ -84,7 +84,6 @@ func TestCreateDeck(t *testing.T) {
 			assert.Equal(t, expectedCards, deck[0]["a9ad2ba2-6ed0-4417-9d27-c695cb917869"].Cards)
 		}
 		assertStatus(t, res.StatusCode, 200)
-
 	})
 }
 

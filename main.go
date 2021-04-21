@@ -16,7 +16,11 @@ func getDeck(c *fiber.Ctx) error {
 }
 
 func createDeck(c *fiber.Ctx) error {
-	d := deck.NewDeck()
+	d, err := deck.NewDeck([]string{}, false)
+	if err != nil {
+		c.SendString("error when creating deck")
+		return c.SendStatus(400)
+	}
 	database.Insert(d)
 
 	return c.JSON(&fiber.Map{
