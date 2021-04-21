@@ -2,6 +2,7 @@ package card
 
 import (
 	"errors"
+	"math/rand"
 	"sort"
 )
 
@@ -13,7 +14,7 @@ type Card struct {
 }
 
 type Carder interface {
-	NewCard() *[]Card
+	NewCard(cardCodes []string, shuffle ...bool) ([]Card, error)
 }
 
 var StandardCards = map[string]Card{
@@ -74,14 +75,16 @@ var StandardCardsCodes = getStandardCardCodes()
 
 var cards = make([]Card, 0, len(StandardCards))
 
-func NewCard(code ...string) ([]Card, error) {
-	for _, actualCode := range code {
+func NewCard(cardCodes []string, shuffle ...bool) ([]Card, error) {
+	for _, actualCode := range cardCodes {
 		if verifyCard(actualCode) {
 			cards = buildCardByCode(actualCode)
 		} else {
-			return []Card{}, errors.New("Cannot create a card with this code")
+			return []Card{}, errors.New("cannot create a card with this code")
 		}
 	}
+
+	shuffleCards(cards, shuffle...)
 	return cards, nil
 }
 
@@ -105,9 +108,15 @@ func buildCardByCode(code string) []Card {
 			Order: matchCard.Order,
 		})
 
-	sort.SliceStable(cards, func(i, j int) bool { return cards[i].Order < cards[j].Order })
 	return cards
+}
 
+func shuffleCards(cards []Card, shuffle ...bool) {
+	if len(shuffle) > 0 && shuffle[0] {
+		rand.Shuffle(len(cards), func(i, j int) { cards[i], cards[j] = cards[j], cards[i] })
+	} else {
+		sort.SliceStable(cards, func(i, j int) bool { return cards[i].Order < cards[j].Order })
+	}
 }
 
 func getStandardCardCodes() []string {

@@ -1,6 +1,7 @@
 package deck
 
 import (
+	"errors"
 	"unnantended/card"
 
 	"github.com/google/uuid"
@@ -18,27 +19,32 @@ type Decker interface {
 
 var GenerateNewUUID = uuid.NewString
 
-func NewDeck(cards ...string) map[string]Deck {
+func NewDeck(cards []string, shuffle bool) (map[string]Deck, error) {
 	d := make(map[string]Deck)
 	uuid := GenerateNewUUID()
-	var buildCards, _ []card.Card
 
 	if len(cards) > 0 {
-		buildCards, _ = card.NewCard(cards...)
+		buildedCards, err := card.NewCard(cards, shuffle)
+		if err != nil {
+			return map[string]Deck{}, errors.New("cannot create a new custom deck")
+		}
 		d[uuid] = Deck{
 			Shuffled:  false,
 			Remaining: remainingCardsFromDeck(card.StandardCardsCodes, cards),
-			Cards:     buildCards,
+			Cards:     buildedCards,
 		}
 	} else {
-		buildCards, _ = card.NewCard(card.StandardCardsCodes...)
+		buildedCards, err := card.NewCard(card.StandardCardsCodes, shuffle)
+		if err != nil {
+			return map[string]Deck{}, errors.New("cannot create a new standard deck")
+		}
 		d[uuid] = Deck{
 			Shuffled:  false,
 			Remaining: remainingCardsFromDeck(card.StandardCardsCodes, cards),
-			Cards:     buildCards,
+			Cards:     buildedCards,
 		}
 	}
-	return d
+	return d, nil
 }
 
 func remainingCardsFromDeck(standardCards []string, requestedCards []string) int {
