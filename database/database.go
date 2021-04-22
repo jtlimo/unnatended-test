@@ -1,7 +1,7 @@
 package database
 
 import (
-	"fmt"
+	"errors"
 	"sync"
 	"unnantended/deck"
 )
@@ -13,7 +13,6 @@ var (
 
 func Connect() {
 	db = make([]map[string]deck.Deck, 0)
-	fmt.Println("Connected with Database")
 }
 
 func Insert(deck map[string]deck.Deck) {
@@ -24,4 +23,16 @@ func Insert(deck map[string]deck.Deck) {
 
 func Get() []map[string]deck.Deck {
 	return db
+}
+
+func GetByDeckId(deckId string) (deck.Deck, error) {
+	foundDeck := deck.Deck{}
+	exists := false
+	for _, deck := range db {
+		foundDeck, exists = deck[deckId]
+	}
+	if !exists {
+		return deck.Deck{}, errors.New("deck not found")
+	}
+	return foundDeck, nil
 }

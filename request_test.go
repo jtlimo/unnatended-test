@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"testing"
 	"unnantended/card"
@@ -106,6 +107,44 @@ func TestCreateDeck(t *testing.T) {
 		assertStatus(t, res.StatusCode, 200)
 	})
 
+}
+
+func TestOpenPreviousDeck(t *testing.T) {
+	app := Setup()
+	expectedCards := "{\"data\":{\"shuffled\":false,\"remaining\":50,\"cards\":[{\"value\":\"ACE\",\"suit\":\"CLUBS\",\"code\":\"AC\",\"order\":26},{\"value\":\"KING\",\"suit\":\"HEARTS\",\"code\":\"KH\",\"order\":51}]},\"success\":true}"
+	var old = deck.GenerateNewUUID
+	defer func() { deck.GenerateNewUUID = old }()
+	deck.GenerateNewUUID = func() string {
+		return "84cb4c8b-9d1c-4a5b-bbbf-3655a1dae7ab"
+	}
+	request := put("AC", "KH")
+	res, _ := app.Test(request, -1)
+	request = open("84cb4c8b-9d1c-4a5b-bbbf-3655a1dae7ab")
+	res, _ = app.Test(request, -1)
+
+	body, err := ioutil.ReadAll(res.Body)
+
+	assert.NoError(t, err, "")
+	assertStatus(t, res.StatusCode, 200)
+	if assert.NotNil(t, string(body)) {
+		assert.Equal(t, expectedCards, string(body))
+	}
+}
+func TestOpenDeckHasPassedOver(t *testing.T) {
+	app := Setup()
+	deck := map[string]deck.Deck{
+		"17fe7acb-188a-400d-8275-5b5c8fe55760": {
+			Remaining: 0,
+			Shuffled:  false,
+			Cards:     []card.Card{},
+		},
+	}
+	database.Insert(deck)
+
+	request := open("17fe7acb-188a-400d-8275-5b5c8fe55760")
+	res, _ := app.Test(request, -1)
+
+	assertStatus(t, res.StatusCode, 412)
 }
 
 func assertStatus(t *testing.T, got, want int) {

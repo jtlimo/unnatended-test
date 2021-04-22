@@ -11,6 +11,26 @@ import (
 )
 
 func getDeck(c *fiber.Ctx) error {
+	deckId := c.Params("deckId")
+
+	if deckId != "" {
+		deck, err := database.GetByDeckId(deckId)
+		if err != nil {
+			c.SendString("deck not found")
+			return c.SendStatus(404)
+		}
+
+		if deck.Remaining == 0 {
+			c.SendString("deck has no remaining cards")
+			return c.SendStatus(412)
+		}
+
+		return c.JSON(&fiber.Map{
+			"success": true,
+			"data":    deck,
+		})
+	}
+
 	return c.JSON(&fiber.Map{
 		"success":  true,
 		"database": database.Get(),
@@ -65,6 +85,7 @@ func Setup() *fiber.App {
 func setupRoutes(app *fiber.App) {
 	v1 := app.Group("/api/v1")
 	v1.Get("/deck", getDeck)
+	v1.Get("/deck/:deckId", getDeck)
 	v1.Put("/deck", createDeck)
 	v1.Put("/deck?cards=:cards", createDeck)
 }
