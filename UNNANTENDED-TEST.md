@@ -37,7 +37,7 @@ _The response needs to return a JSON that would include:_
 ```
   {
     "deck_id": "7dd13273-fabb-4223-9df6-9646c9473880",
-    "shufled": false,
+    "shuffled": false,
     "remaining": 30
   }
 ```

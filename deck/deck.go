@@ -10,7 +10,7 @@ import (
 type Deck struct {
 	Shuffled  bool        `json:"shuffled"`
 	Remaining int         `json:"remaining"`
-	Cards     []card.Card `json:"cards"`
+	Cards     []card.Card `json:"cards" query:"cards"`
 }
 
 type Decker interface {
@@ -29,7 +29,7 @@ func NewDeck(cards []string, shuffle bool) (map[string]Deck, error) {
 			return map[string]Deck{}, errors.New("cannot create a new custom deck")
 		}
 		d[uuid] = Deck{
-			Shuffled:  false,
+			Shuffled:  shuffle,
 			Remaining: remainingCardsFromDeck(card.StandardCardsCodes, cards),
 			Cards:     buildedCards,
 		}
@@ -39,7 +39,7 @@ func NewDeck(cards []string, shuffle bool) (map[string]Deck, error) {
 			return map[string]Deck{}, errors.New("cannot create a new standard deck")
 		}
 		d[uuid] = Deck{
-			Shuffled:  false,
+			Shuffled:  shuffle,
 			Remaining: remainingCardsFromDeck(card.StandardCardsCodes, cards),
 			Cards:     buildedCards,
 		}

@@ -11,7 +11,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var old = deck.GenerateNewUUID
 var expectedCards = []card.Card{
 	{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
 	{Value: "2", Suit: "SPADES", Code: "2S", Order: 1},
@@ -68,14 +67,13 @@ var expectedCards = []card.Card{
 }
 
 func TestCreateDeck(t *testing.T) {
-	app := Setup()
-	var old = deck.GenerateNewUUID
-	defer func() { deck.GenerateNewUUID = old }()
-	deck.GenerateNewUUID = func() string {
-		return "a9ad2ba2-6ed0-4417-9d27-c695cb917869"
-	}
-
 	t.Run("create a new standard Deck", func(t *testing.T) {
+		app := Setup()
+		var old = deck.GenerateNewUUID
+		defer func() { deck.GenerateNewUUID = old }()
+		deck.GenerateNewUUID = func() string {
+			return "a9ad2ba2-6ed0-4417-9d27-c695cb917869"
+		}
 		request := put()
 		res, _ := app.Test(request, -1)
 
@@ -85,6 +83,29 @@ func TestCreateDeck(t *testing.T) {
 		}
 		assertStatus(t, res.StatusCode, 200)
 	})
+
+	t.Run("create a new custom Deck", func(t *testing.T) {
+		app := Setup()
+		var old = deck.GenerateNewUUID
+		defer func() { deck.GenerateNewUUID = old }()
+		deck.GenerateNewUUID = func() string {
+			return "4e360e01-3789-489a-baab-54b5cdbb58f5"
+		}
+		expectedCards := []card.Card{
+			{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
+			{Value: "KING", Suit: "HEARTS", Code: "KH", Order: 51},
+		}
+		request := put("AC", "KH")
+
+		res, _ := app.Test(request, -1)
+
+		deck := database.Get()
+		if assert.NotNil(t, deck) {
+			assert.Equal(t, expectedCards, deck[0]["4e360e01-3789-489a-baab-54b5cdbb58f5"].Cards)
+		}
+		assertStatus(t, res.StatusCode, 200)
+	})
+
 }
 
 func assertStatus(t *testing.T, got, want int) {
@@ -99,7 +120,13 @@ func open(deckId string) *http.Request {
 	return req
 }
 
-func put() *http.Request {
-	req, _ := http.NewRequest(http.MethodPut, "/api/v1/deck", nil)
+func put(cards ...string) *http.Request {
+	var req, _ *http.Request
+	if len(cards) > 0 {
+		req, _ = http.NewRequest(http.MethodPut, fmt.Sprintf("/api/v1/deck?cards=%s", cards), nil)
+	} else {
+		req, _ = http.NewRequest(http.MethodPut, "/api/v1/deck", nil)
+
+	}
 	return req
 }

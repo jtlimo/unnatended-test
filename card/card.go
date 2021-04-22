@@ -73,13 +73,12 @@ var StandardCards = map[string]Card{
 }
 var StandardCardsCodes = getStandardCardCodes()
 
-var cards = make([]Card, 0, len(StandardCards))
-
 func NewCard(cardCodes []string, shuffle ...bool) ([]Card, error) {
+	var cards []Card
+	var err error
 	for _, actualCode := range cardCodes {
-		if verifyCard(actualCode) {
-			cards = buildCardByCode(actualCode)
-		} else {
+		cards, err = buildCardByCode(actualCode, cards)
+		if err != nil {
 			return []Card{}, errors.New("cannot create a card with this code")
 		}
 	}
@@ -88,19 +87,13 @@ func NewCard(cardCodes []string, shuffle ...bool) ([]Card, error) {
 	return cards, nil
 }
 
-func verifyCard(code string) bool {
-	_, existsCard := StandardCards[code]
-	if existsCard {
-		return true
-	} else {
-		return false
+func buildCardByCode(code string, card []Card) ([]Card, error) {
+	matchCard, exists := StandardCards[code]
+	if !exists {
+		return []Card{}, errors.New("cannot create a card with this code")
 	}
-}
 
-func buildCardByCode(code string) []Card {
-	matchCard, _ := StandardCards[code]
-
-	cards = append(cards,
+	card = append(card,
 		Card{
 			Value: matchCard.Value,
 			Suit:  matchCard.Suit,
@@ -108,7 +101,7 @@ func buildCardByCode(code string) []Card {
 			Order: matchCard.Order,
 		})
 
-	return cards
+	return card, nil
 }
 
 func shuffleCards(cards []Card, shuffle ...bool) {

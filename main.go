@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+	"unicode"
 	"unnantended/database"
 	"unnantended/deck"
 
@@ -15,12 +17,32 @@ func getDeck(c *fiber.Ctx) error {
 	})
 }
 
+var sanitizeParams = func(c rune) bool {
+	return !unicode.IsLetter(c) && !unicode.IsNumber(c)
+}
+
 func createDeck(c *fiber.Ctx) error {
-	d, err := deck.NewDeck([]string{}, false)
+	var d map[string]deck.Deck
+	var err error
+
+	params := c.Query("cards")
+	cards := strings.FieldsFunc(params, sanitizeParams)
+
+	if len(params) < 0 || params == "" {
+		cards = []string{}
+		d, err = deck.NewDeck(cards, false)
+	} else {
+		d, err = deck.NewDeck(cards, false)
+		c.JSON(&fiber.Map{
+			"error": err,
+			"cards": cards,
+		})
+	}
 	if err != nil {
 		c.SendString("error when creating deck")
 		return c.SendStatus(400)
 	}
+
 	database.Insert(d)
 
 	return c.JSON(&fiber.Map{
@@ -44,6 +66,7 @@ func setupRoutes(app *fiber.App) {
 	v1 := app.Group("/api/v1")
 	v1.Get("/deck", getDeck)
 	v1.Put("/deck", createDeck)
+	v1.Put("/deck?cards=:cards", createDeck)
 }
 
 func main() {
