@@ -15,7 +15,7 @@ func TestGetByDeckId(t *testing.T) {
 	}
 	expectedDeck := deck.Deck{
 		Shuffled:  false,
-		Remaining: 50,
+		Remaining: 2,
 		Cards:     cards,
 	}
 	var old = deck.GenerateNewUUID

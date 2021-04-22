@@ -30,7 +30,7 @@ func NewDeck(cards []string, shuffle bool) (map[string]Deck, error) {
 		}
 		d[uuid] = Deck{
 			Shuffled:  shuffle,
-			Remaining: remainingCardsFromDeck(card.StandardCardsCodes, cards),
+			Remaining: len(cards),
 			Cards:     buildedCards,
 		}
 	} else {
@@ -40,7 +40,7 @@ func NewDeck(cards []string, shuffle bool) (map[string]Deck, error) {
 		}
 		d[uuid] = Deck{
 			Shuffled:  shuffle,
-			Remaining: remainingCardsFromDeck(card.StandardCardsCodes, cards),
+			Remaining: len(card.StandardCardsCodes),
 			Cards:     buildedCards,
 		}
 	}

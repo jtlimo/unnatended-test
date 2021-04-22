@@ -111,7 +111,7 @@ func TestCreateDeck(t *testing.T) {
 
 func TestOpenPreviousDeck(t *testing.T) {
 	app := Setup()
-	expectedCards := "{\"data\":{\"shuffled\":false,\"remaining\":50,\"cards\":[{\"value\":\"ACE\",\"suit\":\"CLUBS\",\"code\":\"AC\",\"order\":26},{\"value\":\"KING\",\"suit\":\"HEARTS\",\"code\":\"KH\",\"order\":51}]},\"success\":true}"
+	expectedCards := "{\"data\":{\"shuffled\":false,\"remaining\":2,\"cards\":[{\"value\":\"ACE\",\"suit\":\"CLUBS\",\"code\":\"AC\",\"order\":26},{\"value\":\"KING\",\"suit\":\"HEARTS\",\"code\":\"KH\",\"order\":51}]},\"success\":true}"
 	var old = deck.GenerateNewUUID
 	defer func() { deck.GenerateNewUUID = old }()
 	deck.GenerateNewUUID = func() string {

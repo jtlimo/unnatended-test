@@ -96,11 +96,9 @@ func TestRemainingCardsFromACustomDeck(t *testing.T) {
 	GenerateNewUUID = func() string {
 		return "1ab7e07d-6919-4a4b-bf6f-e5a09d954552"
 	}
-	standardCardsSize := 52
 	customDeck, _ := NewDeck([]string{"AS", "KD", "AC"}, false)
-	expectedRemainingCards := (standardCardsSize - 3)
 
-	assertDeckRemainingCards(t, customDeck[GenerateNewUUID()], expectedRemainingCards)
+	assertDeckRemainingCards(t, customDeck[GenerateNewUUID()], 3)
 }
 
 func assertDeckLength(t *testing.T, deck Deck, want int) {
