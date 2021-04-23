@@ -147,6 +147,46 @@ func TestOpenDeckHasPassedOver(t *testing.T) {
 	assertStatus(t, res.StatusCode, 412)
 }
 
+func TestDrawCards(t *testing.T) {
+	app := Setup()
+	expectedCards := "{\"data\":[{\"value\":\"JACK\",\"suit\":\"SPADES\",\"code\":\"JS\",\"order\":10},{\"value\":\"ACE\",\"suit\":\"CLUBS\",\"code\":\"AC\",\"order\":26}],\"message\":\"cards are successfully drawn\",\"success\":true}"
+	expectedDeck := deck.Deck{
+		Shuffled:  false,
+		Remaining: 1,
+		Cards: []card.Card{
+			{Value: "KING", Suit: "HEARTS", Code: "KH", Order: 51},
+		},
+	}
+	cards := []card.Card{
+		{Value: "JACK", Suit: "SPADES", Code: "JS", Order: 10},
+		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
+		{Value: "KING", Suit: "HEARTS", Code: "KH", Order: 51},
+	}
+
+	deck := map[string]deck.Deck{
+		"17fe7acb-188a-400d-8275-5b5c8fe55760": {
+			Remaining: 3,
+			Shuffled:  false,
+			Cards:     cards,
+		},
+	}
+	database.Insert(deck)
+
+	request := draw("17fe7acb-188a-400d-8275-5b5c8fe55760", "2")
+	res, err := app.Test(request, -1)
+
+	newDeck, _ := database.GetByDeckId("17fe7acb-188a-400d-8275-5b5c8fe55760")
+
+	body, err := ioutil.ReadAll(res.Body)
+
+	assert.NoError(t, err, "")
+	assertStatus(t, res.StatusCode, 200)
+	if assert.NotNil(t, string(body)) {
+		assert.Equal(t, expectedCards, string(body))
+		assert.Equal(t, expectedDeck, newDeck)
+	}
+}
+
 func assertStatus(t *testing.T, got, want int) {
 	t.Helper()
 	if got != want {
@@ -167,5 +207,10 @@ func put(cards ...string) *http.Request {
 		req, _ = http.NewRequest(http.MethodPut, "/api/v1/deck", nil)
 
 	}
+	return req
+}
+
+func draw(deckId string, count string) *http.Request {
+	req, _ := http.NewRequest(http.MethodPut, fmt.Sprintf("/api/v1/deck/%s/%s", deckId, count), nil)
 	return req
 }

@@ -14,7 +14,8 @@ type Deck struct {
 }
 
 type Decker interface {
-	NewDeck() Deck
+	NewDeck(cards []string, shuffle bool) (map[string]Deck, error)
+	Draw(quantity int, deck Deck) (c []card.Card, d Deck)
 }
 
 var GenerateNewUUID = uuid.NewString
@@ -47,6 +48,26 @@ func NewDeck(cards []string, shuffle bool) (map[string]Deck, error) {
 	return d, nil
 }
 
+func Draw(quantity int, deck Deck) (c []card.Card, d Deck) {
+	cards := []card.Card{}
+
+	for i := 0; i < quantity; i++ {
+		cards = append(cards, deck.Cards[i])
+	}
+
+	for i := 0; i < quantity; i++ {
+		deck.Cards = removeIndex(deck.Cards, i)
+	}
+
+	deck.Remaining = len(deck.Cards)
+	return cards, deck
+}
+
 func remainingCardsFromDeck(standardCards []string, requestedCards []string) int {
 	return len(standardCards) - len(requestedCards)
+}
+
+func removeIndex(s []card.Card, index int) []card.Card {
+	s[index] = s[len(s)-1]
+	return s[:len(s)-1]
 }

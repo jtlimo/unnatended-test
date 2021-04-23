@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"strings"
 	"unicode"
 	"unnantended/database"
@@ -72,6 +73,42 @@ func createDeck(c *fiber.Ctx) error {
 	})
 }
 
+func drawCard(c *fiber.Ctx) error {
+	deckId := c.Params("deckId")
+	countParam := c.Params("count")
+
+	d, err := database.GetByDeckId(deckId)
+	count, _ := strconv.Atoi(countParam)
+
+	if err != nil {
+		c.SendString("deck not found")
+		return c.SendStatus(404)
+	}
+
+	if count > d.Remaining {
+		c.SendString("you cannot draw a card from the deck")
+		return c.SendStatus(422)
+	}
+
+	cards, d := deck.Draw(count, d)
+
+	deckBuild := map[string]deck.Deck{
+		deckId: {
+			Remaining: d.Remaining,
+			Shuffled:  d.Shuffled,
+			Cards:     d.Cards,
+		},
+	}
+
+	database.Insert(deckBuild)
+
+	return c.JSON(&fiber.Map{
+		"success": true,
+		"message": "cards are successfully drawn",
+		"data":    cards,
+	})
+}
+
 func Setup() *fiber.App {
 	database.Connect()
 
@@ -86,6 +123,7 @@ func setupRoutes(app *fiber.App) {
 	v1 := app.Group("/api/v1")
 	v1.Get("/deck", getDeck)
 	v1.Get("/deck/:deckId", getDeck)
+	v1.Put("/deck/:deckId/:count", drawCard)
 	v1.Put("/deck", createDeck)
 	v1.Put("/deck?cards=:cards", createDeck)
 }
