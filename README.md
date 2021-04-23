@@ -38,8 +38,9 @@ $ sh test.sh
 $ cd <project_folder>
 $ sh start.sh
 ```
-* Open the browser on `localhost:3000`
 
-You will see in your terminal something like that:
+>You will see in your terminal something like that:
 
 ![Alt text](./assets/start-server.png?raw=true "Initializing the server")
+
+>And now open the browser on `localhost:3000`
