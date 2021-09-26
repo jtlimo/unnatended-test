@@ -1,7 +1,4 @@
-**Unnantended Test**
-
-You are required to provide an implementation of a REST API to simulate a
-deck of cards.
+**Yoke Cards**
 
 You will need to provide the following methods to your API to handle cards
 and decks:
