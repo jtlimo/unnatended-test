@@ -2,7 +2,7 @@ package deck
 
 import (
 	"testing"
-	"unnantended/card"
+	"unattended-test/card"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -2,7 +2,7 @@ package deck
 
 import (
 	"errors"
-	"unnantended/card"
+	"unattended-test/card"
 
 	"github.com/google/uuid"
 )
