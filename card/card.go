@@ -2,19 +2,17 @@ package card
 
 import (
 	"errors"
-	"math/rand"
-	"sort"
 )
 
 type Card struct {
 	Value string `json:"value"`
 	Suit  string `json:"suit"`
 	Code  string `json:"code"`
-	Order int    `json:"order"`
+	Order int
 }
 
 type Carder interface {
-	NewCard(cardCodes []string, shuffle ...bool) ([]Card, error)
+	NewCard(cardCodes []string) ([]Card, error)
 }
 
 var StandardCards = map[string]Card{
@@ -71,19 +69,19 @@ var StandardCards = map[string]Card{
 	"QH":  {Value: "QUEEN", Suit: "HEARTS", Code: "QH", Order: 50},
 	"KH":  {Value: "KING", Suit: "HEARTS", Code: "KH", Order: 51},
 }
+
 var StandardCardsCodes = getStandardCardCodes()
 
-func NewCard(cardCodes []string, shuffle ...bool) ([]Card, error) {
+func (c *Card) NewCard(cardCodes []string) ([]Card, error) {
 	var cards []Card
 	var err error
+
 	for _, actualCode := range cardCodes {
 		cards, err = buildCardByCode(actualCode, cards)
 		if err != nil {
 			return []Card{}, errors.New("cannot create a card with this code")
 		}
 	}
-
-	shuffleCards(cards, shuffle...)
 	return cards, nil
 }
 
@@ -102,14 +100,6 @@ func buildCardByCode(code string, card []Card) ([]Card, error) {
 		})
 
 	return card, nil
-}
-
-func shuffleCards(cards []Card, shuffle ...bool) {
-	if len(shuffle) > 0 && shuffle[0] {
-		rand.Shuffle(len(cards), func(i, j int) { cards[i], cards[j] = cards[j], cards[i] })
-	} else {
-		sort.SliceStable(cards, func(i, j int) bool { return cards[i].Order < cards[j].Order })
-	}
 }
 
 func getStandardCardCodes() []string {

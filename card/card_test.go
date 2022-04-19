@@ -1,13 +1,14 @@
 package card
 
 import (
+	"fmt"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
+var c Card
+
 func TestBuildCard(t *testing.T) {
-	card, err := NewCard([]string{"QH"})
+	card, err := c.NewCard([]string{"QH"})
 
 	assertCardBuild(t, card[0].Value, "QUEEN")
 	assertCardBuild(t, card[0].Suit, "HEARTS")
@@ -15,39 +16,28 @@ func TestBuildCard(t *testing.T) {
 	assertError(t, err, "")
 }
 
-func TestBuildShuffledCards(t *testing.T) {
-	expectedCards := []Card{
-		{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
-		{Value: "KING", Suit: "DIAMONDS", Code: "KD", Order: 25},
-		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
-	}
-	card, err := NewCard([]string{"AS", "KD", "AC"}, true)
-
-	assert.NotEqual(t, expectedCards, card)
-	assertError(t, err, "")
-}
-
 func TestBuildMultipleCards(t *testing.T) {
-	card, err := NewCard([]string{"QH", "JD"})
+	cards, err := c.NewCard([]string{"QH", "JD"})
 
-	assertCardBuild(t, card[1].Value, "QUEEN")
-	assertCardBuild(t, card[1].Suit, "HEARTS")
-	assertCardBuild(t, card[1].Code, "QH")
+	fmt.Println(cards)
+	assertCardBuild(t, cards[0].Value, "QUEEN")
+	assertCardBuild(t, cards[0].Suit, "HEARTS")
+	assertCardBuild(t, cards[0].Code, "QH")
 
-	assertCardBuild(t, card[0].Value, "JACK")
-	assertCardBuild(t, card[0].Suit, "DIAMONDS")
-	assertCardBuild(t, card[0].Code, "JD")
+	assertCardBuild(t, cards[1].Value, "JACK")
+	assertCardBuild(t, cards[1].Suit, "DIAMONDS")
+	assertCardBuild(t, cards[1].Code, "JD")
 	assertError(t, err, "")
 }
 
 func TestBuildCardWhenCodeIsInexistent(t *testing.T) {
-	_, err := NewCard([]string{"LUI"})
+	_, err := c.NewCard([]string{"LUI"})
 
 	assertError(t, err, "cannot create a card with this code")
 }
 
 func TestBuildCardWithoutCode(t *testing.T) {
-	card, err := NewCard([]string{})
+	card, err := c.NewCard([]string{})
 
 	assertCardLength(t, card, 0)
 	assertError(t, err, "")
