@@ -8,6 +8,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var (
+	db Database
+	dc deck.Deck
+)
+
 func TestGetByDeckId(t *testing.T) {
 	cards := []card.Card{
 		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
@@ -23,11 +28,11 @@ func TestGetByDeckId(t *testing.T) {
 	deck.GenerateNewUUID = func() string {
 		return "a9ad2ba2-6ed0-4417-9d27-c695cb917869"
 	}
-	d, _ := deck.NewDeck([]string{"AC", "KH"}, false)
+	d, _ := dc.NewDeck([]string{"AC", "KH"}, false)
 
-	Insert(d)
+	db.Insert(d)
 
-	deck, err := GetByDeckId("a9ad2ba2-6ed0-4417-9d27-c695cb917869")
+	deck, err := db.GetByDeckId("a9ad2ba2-6ed0-4417-9d27-c695cb917869")
 
 	assert.NoError(t, err)
 	if assert.NotEmpty(t, deck) || assert.NotNil(t, deck) {
@@ -44,9 +49,9 @@ func TestReturnErrorWhenDeckNotFound(t *testing.T) {
 		},
 	}
 
-	Insert(d)
+	db.Insert(d)
 
-	_, err := GetByDeckId("a9ad2ba2-6ed0-4417-9d27-c695cb917869")
+	_, err := db.GetByDeckId("a9ad2ba2-6ed0-4417-9d27-c695cb917869")
 
 	assert.Error(t, err, "deck not found")
 }
