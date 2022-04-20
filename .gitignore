@@ -1,0 +1,19 @@
+## ignore IDE generated folders
+.idea/*
+.vscode/*
+
+## ignore logs
+*.log
+
+# compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+## executables
+*.exe
+*.test
+*.prof
+
+# output of the go coverage tool, specifically when used with LiteIDE
+*.out
