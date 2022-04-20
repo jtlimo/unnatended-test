@@ -10,10 +10,17 @@ type Database struct {
 	db []map[string]deck.Deck
 }
 
-var mu sync.Mutex
+var (
+	mu     sync.Mutex
+	deckDb []map[string]deck.Deck
+	d      Database
+)
 
-func (d *Database) Connect() {
-	d.db = make([]map[string]deck.Deck, 0)
+func Init() (db *Database) {
+	deckDb = make([]map[string]deck.Deck, 0)
+	d.db = deckDb
+
+	return &d
 }
 
 func (d *Database) Insert(deck map[string]deck.Deck) {
