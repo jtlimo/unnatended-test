@@ -10,6 +10,7 @@ import (
 )
 
 type Deck struct {
+	Id        string      `json:"deck_id"`
 	Shuffled  bool        `json:"shuffled"`
 	Remaining int         `json:"remaining"`
 	Cards     []card.Card `json:"cards" query:"cards"`
@@ -26,38 +27,38 @@ var err error
 
 func (d *Deck) NewDeck(cards []string, shuffle bool) (map[string]Deck, error) {
 	deck := make(map[string]Deck)
-	uuid := GenerateNewUUID()
-	var buildedCards = []card.Card{}
+	duuid := GenerateNewUUID()
+	var builtCards []card.Card
 
 	if len(cards) > 0 {
-		buildedCards, err = d.card.NewCard(cards)
+		builtCards, err = d.card.NewCard(cards)
 		if err != nil {
 			return map[string]Deck{}, errors.New("cannot create a new custom deck")
 		}
 	} else {
-		buildedCards, err = d.card.NewCard(card.StandardCardsCodes)
+		builtCards, err = d.card.NewCard(card.StandardCardsCodes)
 		if err != nil {
 			return map[string]Deck{}, errors.New("cannot create a new standard deck")
 		}
 	}
 
 	if shuffle {
-		shuffleCards(buildedCards)
+		shuffleCards(builtCards)
 	} else {
-		maintainsCardsOrder(buildedCards)
+		maintainsCardsOrder(builtCards)
 	}
 
-	deck[uuid] = Deck{
+	deck[duuid] = Deck{
 		Shuffled:  shuffle,
-		Remaining: len(buildedCards),
-		Cards:     buildedCards,
+		Remaining: len(builtCards),
+		Cards:     builtCards,
 	}
 
 	return deck, nil
 }
 
 func Draw(quantity int, deck Deck) (c []card.Card, d Deck) {
-	cards := []card.Card{}
+	var cards []card.Card
 
 	for i := 0; i < quantity; i++ {
 		cards = append(cards, cards[i])

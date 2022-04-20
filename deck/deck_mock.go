@@ -15,30 +15,30 @@ type SpyDeck struct {
 func (s *SpyDeck) NewDeck(cards []string, shuffle bool) (map[string]Deck, error) {
 	deck := make(map[string]Deck)
 	uuid := GenerateNewUUID()
-	var buildedCards = []card.Card{}
+	var builtCards []card.Card
 
 	if len(cards) > 0 {
-		buildedCards, err = s.card.NewCard(cards)
+		builtCards, err = s.card.NewCard(cards)
 		if err != nil {
 			return map[string]Deck{}, errors.New("cannot create a new custom deck")
 		}
 	} else {
-		buildedCards, err = s.card.NewCard(card.StandardCardsCodes)
+		builtCards, err = s.card.NewCard(card.StandardCardsCodes)
 		if err != nil {
 			return map[string]Deck{}, errors.New("cannot create a new standard deck")
 		}
 	}
 
 	if shuffle {
-		shuffleCards(buildedCards)
+		shuffleCards(builtCards)
 	} else {
-		maintainsCardsOrder(buildedCards)
+		maintainsCardsOrder(builtCards)
 	}
 
 	deck[uuid] = Deck{
 		Shuffled:  shuffle,
-		Remaining: len(buildedCards),
-		Cards:     buildedCards,
+		Remaining: len(builtCards),
+		Cards:     builtCards,
 	}
 
 	return deck, nil
