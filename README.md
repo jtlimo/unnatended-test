@@ -1,13 +1,13 @@
-# Yoke Cards
+# Unnatended test
 
 API to provide the functionalities to create a playing card games with these specifics endpoints
 
-- `GET /api/v1/deck/:deckId`
-- `PUT /api/v1/deck` or `PUT /api/v1/deck?cards=AS,KD,AC,2C,KH`
-- `PUT /api/v1/deck/:deckId/:count`
+- `GET /deck/:deckId`
+- `POST /deck` or `POST /deck?cards=AS,KD,AC,2C,KH`
+- `POST /deck/:deckId/:count`
 
 ## Dependencies
-* Go 1.16.3
+* Go 1.17.9
 
 ## Build project
 ```console
@@ -24,8 +24,21 @@ $ make test
 $ make start
 ```
 
->You will see in your terminal something like that:
+## How to create a new deck
 
-![Alt text](./assets/start-server.png?raw=true "Initializing the server")
+> Open insomnia / postman or simply make a request with Curl to this endpoint:
+- `POST /deck` or `POST /deck?cards=AS,KD,AC,2C,KH`
 
->And now open the browser on `localhost:3000`
+> Example using insomnia
+
+![example of creating a deck](assets/create-deck.png "a title")
+
+> Example using Curl
+
+```console
+curl --request POST \
+  --url 'http://localhost:8080/deck?card=AS' \
+  --header 'content-type: application/json'```
+```
+
+>And now open the browser on `localhost:8080`
