@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 	"unattended-test/database"
 )
@@ -13,12 +12,12 @@ type Server struct {
 	Db     *database.Database
 }
 
-func (s *Server) Setup() {
+func (s *Server) Setup() *mux.Router {
 	s.Router = mux.NewRouter()
 	s.createRoutes()
 	s.initializeDB()
 
-	log.Fatal(http.ListenAndServe(":8080", s.Router))
+	return s.Router
 }
 
 func (s *Server) createRoutes() {

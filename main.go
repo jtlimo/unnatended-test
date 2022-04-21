@@ -1,10 +1,14 @@
 package main
 
 import (
+	"log"
+	"net/http"
 	"unattended-test/server"
 )
 
 func main() {
 	s := server.Server{}
-	s.Setup()
+	router := s.Setup()
+
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
