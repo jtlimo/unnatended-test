@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var old = GenerateNewUUID
 var expectedCards = []card.Card{
 	{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
 	{Value: "2", Suit: "SPADES", Code: "2S", Order: 1},
@@ -64,65 +63,46 @@ var expectedCards = []card.Card{
 }
 
 var sd SpyDeck
-var d Deck
 
 func TestBuildStandardDeck(t *testing.T) {
-	defer func() { GenerateNewUUID = old }()
-	GenerateNewUUID = func() string {
-		return "1ab7e07d-6919-4a4b-bf6f-e5a09d954552"
-	}
+	defaultDeck, _ := NewDeck([]string{}, false)
 
-	defaultDeck, _ := d.NewDeck([]string{}, false)
-
-	assert.Equal(t, expectedCards, defaultDeck[GenerateNewUUID()].Cards)
-	assertDeckLength(t, defaultDeck[GenerateNewUUID()], 52)
+	assert.Equal(t, expectedCards, defaultDeck.Cards)
+	assertDeckLength(t, defaultDeck, 52)
 }
 
 func TestBuildCustomDeck(t *testing.T) {
-	defer func() { GenerateNewUUID = old }()
-	GenerateNewUUID = func() string {
-		return "1ab7e07d-6919-4a4b-bf6f-e5a09d954552"
-	}
-	customDeck, _ := d.NewDeck([]string{"AS", "KD", "AC"}, false)
+	customDeck, _ := NewDeck([]string{"AS", "KD", "AC"}, false)
 
 	expectedCards := []card.Card{
 		{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
 		{Value: "KING", Suit: "DIAMONDS", Code: "KD", Order: 25},
 		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
 	}
-	assert.ElementsMatch(t, expectedCards, customDeck[GenerateNewUUID()].Cards)
-	assertDeckLength(t, customDeck[GenerateNewUUID()], 3)
+	assert.ElementsMatch(t, expectedCards, customDeck.Cards)
+	assertDeckLength(t, customDeck, 3)
 }
 
 func TestRemainingCardsFromACustomDeck(t *testing.T) {
-	defer func() { GenerateNewUUID = old }()
-	GenerateNewUUID = func() string {
-		return "1ab7e07d-6919-4a4b-bf6f-e5a09d954552"
-	}
-	customDeck, _ := d.NewDeck([]string{"AS", "KD", "AC"}, false)
+	customDeck, _ := NewDeck([]string{"AS", "KD", "AC"}, false)
 
-	assertDeckRemainingCards(t, customDeck[GenerateNewUUID()], 3)
+	assertDeckRemainingCards(t, customDeck, 3)
 }
 
 func TestBuildShuffledDeck(t *testing.T) {
-	defer func() { GenerateNewUUID = old }()
-	GenerateNewUUID = func() string {
-		return "1ab7e07d-6919-4a4b-bf6f-e5a09d954552"
-	}
-
 	expectedCards := []card.Card{
 		{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
 		{Value: "KING", Suit: "DIAMONDS", Code: "KD", Order: 25},
 		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
 		{Value: "JACK", Suit: "CLUBS", Code: "JC", Order: 36},
 	}
-	customDeck, _ := d.NewDeck([]string{"AS", "KD", "AC", "JC"}, true)
+	customDeck, _ := NewDeck([]string{"AS", "KD", "AC", "JC"}, true)
 
-	assert.ElementsMatch(t, expectedCards, customDeck[GenerateNewUUID()].Cards)
+	assert.ElementsMatch(t, expectedCards, customDeck.Cards)
 }
 
 func TestNewDeckReturnsAnErrorWhenCreateACustomDeck(t *testing.T) {
-	_, err := d.NewDeck([]string{"JJ"}, false)
+	_, err := NewDeck([]string{"JJ"}, false)
 
 	assert.EqualError(t, err, "cannot create a new custom deck")
 }
@@ -133,7 +113,7 @@ func TestNewDeckReturnsAnErrorWhenCreateAStandardDeck(t *testing.T) {
 	assert.EqualError(t, err, "cannot create a new standard deck")
 }
 
-func assertDeckLength(t *testing.T, deck Deck, want int) {
+func assertDeckLength(t *testing.T, deck *Deck, want int) {
 	t.Helper()
 	got := len(deck.Cards)
 	if got != want {
@@ -141,7 +121,7 @@ func assertDeckLength(t *testing.T, deck Deck, want int) {
 	}
 }
 
-func assertDeckRemainingCards(t *testing.T, deck Deck, want int) {
+func assertDeckRemainingCards(t *testing.T, deck *Deck, want int) {
 	t.Helper()
 	got := deck.Remaining
 	if got != want {

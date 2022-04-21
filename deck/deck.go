@@ -2,43 +2,42 @@ package deck
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"math/rand"
 	"sort"
 	"unattended-test/card"
-
-	"github.com/google/uuid"
 )
 
 type Deck struct {
-	Id        string      `json:"deck_id"`
-	Shuffled  bool        `json:"shuffled"`
-	Remaining int         `json:"remaining"`
-	Cards     []card.Card `json:"cards" query:"cards"`
-	card      card.Card
+	Id        string
+	Shuffled  bool
+	Remaining int
+	Cards     []card.Card
 }
 
 type Decker interface {
-	NewDeck(cards []string, shuffle bool) (map[string]Deck, error)
+	NewDeck(cards []string, shuffle bool) (*Deck, error)
 	Draw(quantity int, deck Deck) (c []card.Card, d Deck)
+	Open(duuid uuid.UUID) (*Deck, error)
 }
 
 var GenerateNewUUID = uuid.NewString
 var err error
 
-func (d *Deck) NewDeck(cards []string, shuffle bool) (map[string]Deck, error) {
-	deck := make(map[string]Deck)
+func NewDeck(cards []string, shuffle bool) (*Deck, error) {
 	duuid := GenerateNewUUID()
 	var builtCards []card.Card
+	isCustomDeck := len(cards) > 0 && cards[0] != ""
 
-	if len(cards) > 0 {
-		builtCards, err = d.card.NewCard(cards)
+	if isCustomDeck {
+		builtCards, err = card.NewCard(cards)
 		if err != nil {
-			return map[string]Deck{}, errors.New("cannot create a new custom deck")
+			return nil, errors.New("cannot create a new custom deck")
 		}
 	} else {
-		builtCards, err = d.card.NewCard(card.StandardCardsCodes)
+		builtCards, err = card.NewCard(card.StandardCardsCodes)
 		if err != nil {
-			return map[string]Deck{}, errors.New("cannot create a new standard deck")
+			return nil, errors.New("cannot create a new standard deck")
 		}
 	}
 
@@ -48,7 +47,8 @@ func (d *Deck) NewDeck(cards []string, shuffle bool) (map[string]Deck, error) {
 		maintainsCardsOrder(builtCards)
 	}
 
-	deck[duuid] = Deck{
+	deck := &Deck{
+		Id:        duuid,
 		Shuffled:  shuffle,
 		Remaining: len(builtCards),
 		Cards:     builtCards,
@@ -57,7 +57,7 @@ func (d *Deck) NewDeck(cards []string, shuffle bool) (map[string]Deck, error) {
 	return deck, nil
 }
 
-func Draw(quantity int, deck Deck) (c []card.Card, d Deck) {
+func (d *Deck) Draw(quantity int) []card.Card {
 	var cards []card.Card
 
 	for i := 0; i < quantity; i++ {
@@ -65,11 +65,11 @@ func Draw(quantity int, deck Deck) (c []card.Card, d Deck) {
 	}
 
 	for i := 0; i < quantity; i++ {
-		deck.Cards = removeIndex(deck.Cards, i)
+		d.Cards = removeIndex(d.Cards, i)
 	}
 
-	deck.Remaining = len(deck.Cards)
-	return cards, deck
+	d.Remaining = len(d.Cards)
+	return cards
 }
 
 // func remainingCardsFromDeck(standardCards []string, requestedCards []string) int {
