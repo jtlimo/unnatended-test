@@ -7,40 +7,29 @@ import (
 )
 
 type Database struct {
-	db []map[string]deck.Deck
+	db map[string]*deck.Deck
+	mu sync.Mutex
 }
-
-var (
-	mu     sync.Mutex
-	deckDb []map[string]deck.Deck
-	d      Database
-)
 
 func Init() (db *Database) {
-	deckDb = make([]map[string]deck.Deck, 0)
-	d.db = deckDb
-
-	return &d
+	return &Database{
+		db: make(map[string]*deck.Deck),
+	}
 }
 
-func (d *Database) Insert(deck map[string]deck.Deck) {
-	mu.Lock()
-	d.db = append(d.db, deck)
-	mu.Unlock()
+func (d *Database) Insert(deck *deck.Deck) {
+	d.mu.Lock()
+	d.db[deck.Id] = deck
+	d.mu.Unlock()
 }
 
-func (d *Database) Get() []map[string]deck.Deck {
+func (d *Database) Get() map[string]*deck.Deck {
 	return d.db
 }
 
-func (d *Database) GetByDeckId(deckId string) (deck.Deck, error) {
-	foundDeck := deck.Deck{}
-	exists := false
-	for _, deck := range d.db {
-		foundDeck, exists = deck[deckId]
+func (d *Database) GetByDeckId(deckId string) (*deck.Deck, error) {
+	if foundDeck, exists := d.db[deckId]; exists {
+		return foundDeck, nil
 	}
-	if !exists {
-		return deck.Deck{}, errors.New("deck not found")
-	}
-	return foundDeck, nil
+	return nil, errors.New("deck not found")
 }
