@@ -72,14 +72,14 @@ var StandardCards = map[string]Card{
 
 var StandardCardsCodes = getStandardCardCodes()
 
-func (c *Card) NewCard(cardCodes []string) ([]Card, error) {
+func NewCard(cardCodes []string) ([]Card, error) {
 	var cards []Card
 	var err error
 
 	for _, actualCode := range cardCodes {
 		cards, err = buildCardByCode(actualCode, cards)
 		if err != nil {
-			return []Card{}, errors.New("cannot create a card with this code")
+			return nil, errors.New("cannot create a card with this code")
 		}
 	}
 	return cards, nil
@@ -88,7 +88,7 @@ func (c *Card) NewCard(cardCodes []string) ([]Card, error) {
 func buildCardByCode(code string, card []Card) ([]Card, error) {
 	matchCard, exists := StandardCards[code]
 	if !exists {
-		return []Card{}, errors.New("cannot create a card with this code")
+		return nil, errors.New("cannot create a card with this code")
 	}
 
 	card = append(card,
