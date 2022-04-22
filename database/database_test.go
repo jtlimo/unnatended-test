@@ -8,17 +8,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	db Database
-	dc deck.Deck
-)
-
 func TestGetByDeckId(t *testing.T) {
+	db := Init()
 	cards := []card.Card{
 		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
 		{Value: "KING", Suit: "HEARTS", Code: "KH", Order: 51},
 	}
-	expectedDeck := deck.Deck{
+	expectedDeck := &deck.Deck{
+		Id:        "a9ad2ba2-6ed0-4417-9d27-c695cb917869",
 		Shuffled:  false,
 		Remaining: 2,
 		Cards:     cards,
@@ -28,25 +25,25 @@ func TestGetByDeckId(t *testing.T) {
 	deck.GenerateNewUUID = func() string {
 		return "a9ad2ba2-6ed0-4417-9d27-c695cb917869"
 	}
-	d, _ := dc.NewDeck([]string{"AC", "KH"}, false)
+	d, _ := deck.NewDeck([]string{"AC", "KH"}, false)
 
 	db.Insert(d)
 
-	deck, err := db.GetByDeckId("a9ad2ba2-6ed0-4417-9d27-c695cb917869")
+	dc, err := db.GetByDeckId("a9ad2ba2-6ed0-4417-9d27-c695cb917869")
 
 	assert.NoError(t, err)
-	if assert.NotEmpty(t, deck) || assert.NotNil(t, deck) {
-		assert.Equal(t, expectedDeck, deck)
+	if assert.NotEmpty(t, dc) || assert.NotNil(t, dc) {
+		assert.Equal(t, expectedDeck, dc)
 	}
 }
 
 func TestReturnErrorWhenDeckNotFound(t *testing.T) {
-	d := map[string]deck.Deck{
-		"a9ad2ba2-6ed0-4417-9d27-a9ad2ba2": {
-			Remaining: 10,
-			Shuffled:  false,
-			Cards:     []card.Card{},
-		},
+	db := Init()
+	d := &deck.Deck{
+		Id:        "a9ad2ba2-6ed0-4417-9d27-a9ad2ba2",
+		Remaining: 10,
+		Shuffled:  false,
+		Cards:     []card.Card{},
 	}
 
 	db.Insert(d)
