@@ -1,6 +1,6 @@
 start:
 	go run main.go
 build:
-	go build -o unnatended-test
+	go build
 test:
 	go test ./...
