@@ -214,6 +214,59 @@ func TestDrawDeck(t *testing.T) {
 		assertStatus(t, res.Code, http.StatusOK)
 	})
 
+	t.Run("draw cards from a deck in sequence", func(t *testing.T) {
+		expectedCardsFirstReq := []dto.CardDTO{
+			{
+				Value: "ACE",
+				Suit:  "SPADES",
+				Code:  "AS",
+			},
+		}
+		expectedCardsSecReq := []dto.CardDTO{
+			{
+				Value: "JACK",
+				Suit:  "DIAMONDS",
+				Code:  "JD",
+			},
+		}
+
+		router := s.Setup()
+		localServer := httptest.NewServer(router)
+		defer localServer.Close()
+		var old = deck.GenerateNewUUID
+		defer func() { deck.GenerateNewUUID = old }()
+		deck.GenerateNewUUID = func() string {
+			return "7dd13273-fabb-4223-9df6-9646c9473810123321"
+		}
+		request := create("false", "AS,JD,QH")
+		executeRequest(request)
+
+		drawRequest := draw("7dd13273-fabb-4223-9df6-9646c9473810123321", 1)
+		res := executeRequest(drawRequest)
+
+		payload, _ := ioutil.ReadAll(res.Body)
+
+		var jsonData []dto.CardDTO
+		json.Unmarshal(payload, &jsonData)
+
+		if assert.NotNil(t, jsonData) {
+			assert.Equal(t, expectedCardsFirstReq, jsonData)
+		}
+		assertStatus(t, res.Code, http.StatusOK)
+
+		drawRequest = draw("7dd13273-fabb-4223-9df6-9646c9473810123321", 1)
+		res = executeRequest(drawRequest)
+
+		payload, _ = ioutil.ReadAll(res.Body)
+
+		json.Unmarshal(payload, &jsonData)
+
+		if assert.NotNil(t, jsonData) {
+			assert.Equal(t, expectedCardsSecReq, jsonData)
+		}
+		assertStatus(t, res.Code, http.StatusOK)
+	})
+
 	t.Run("returns a not found error when draw cards from a nonexistent deck", func(t *testing.T) {
 		router := s.Setup()
 		localServer := httptest.NewServer(router)
