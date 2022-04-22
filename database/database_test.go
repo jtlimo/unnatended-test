@@ -9,7 +9,7 @@ import (
 )
 
 func TestGetByDeckId(t *testing.T) {
-	db := Init()
+	db := New()
 	cards := []card.Card{
 		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
 		{Value: "KING", Suit: "HEARTS", Code: "KH", Order: 51},
@@ -38,7 +38,7 @@ func TestGetByDeckId(t *testing.T) {
 }
 
 func TestReturnErrorWhenDeckNotFound(t *testing.T) {
-	db := Init()
+	db := New()
 	d := &deck.Deck{
 		Id:        "a9ad2ba2-6ed0-4417-9d27-a9ad2ba2",
 		Remaining: 10,

@@ -11,7 +11,7 @@ type Database struct {
 	mu sync.Mutex
 }
 
-func Init() (db *Database) {
+func New() (db *Database) {
 	return &Database{
 		db: make(map[string]*deck.Deck),
 	}
