@@ -22,15 +22,14 @@ var s = Server{
 }
 
 func TestCreateDeck(t *testing.T) {
+	newServer(t)
+
 	t.Run("create a new standard Deck", func(t *testing.T) {
 		expectedDeck := dto.DeckDTO{
 			Id:        "7dd13273-fabb-4223-9df6-9646c9473880",
 			Shuffled:  false,
 			Remaining: 52,
 		}
-		localServer := httptest.NewServer(s.Router)
-		s.CreateRoutes()
-		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
 		deck.GenerateNewUUID = func() string {
@@ -56,9 +55,6 @@ func TestCreateDeck(t *testing.T) {
 			Shuffled:  false,
 			Remaining: 3,
 		}
-		localServer := httptest.NewServer(s.Router)
-		s.CreateRoutes()
-		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
 		deck.GenerateNewUUID = func() string {
@@ -84,9 +80,6 @@ func TestCreateDeck(t *testing.T) {
 			Shuffled:  true,
 			Remaining: 3,
 		}
-		localServer := httptest.NewServer(s.Router)
-		s.CreateRoutes()
-		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
 		deck.GenerateNewUUID = func() string {
@@ -108,6 +101,8 @@ func TestCreateDeck(t *testing.T) {
 }
 
 func TestOpenDeck(t *testing.T) {
+	newServer(t)
+
 	t.Run("open an existent deck", func(t *testing.T) {
 		cards, _ := card.NewCard([]string{"AS", "JD", "QH"})
 		expectedDeck := dto.OpenDeckDTO{
@@ -118,9 +113,6 @@ func TestOpenDeck(t *testing.T) {
 			},
 			CardDTO: dto.ToCard(cards),
 		}
-		localServer := httptest.NewServer(s.Router)
-		s.CreateRoutes()
-		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
 		deck.GenerateNewUUID = func() string {
@@ -145,22 +137,13 @@ func TestOpenDeck(t *testing.T) {
 	})
 
 	t.Run("returns not found when try to open a nonexistent deck", func(t *testing.T) {
-		localServer := httptest.NewServer(s.Router)
-		s.CreateRoutes()
-		defer localServer.Close()
-
 		openRequest := open("7dd13273-fabb-4223-9df6-9646c9473891")
-
 		res := executeRequest(openRequest)
 
 		assertStatus(t, res.Code, http.StatusNotFound)
 	})
 
 	t.Run("returns bad request when try to open a deck without remaining cards", func(t *testing.T) {
-		localServer := httptest.NewServer(s.Router)
-		s.CreateRoutes()
-		defer localServer.Close()
-
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
 		deck.GenerateNewUUID = func() string {
@@ -181,6 +164,7 @@ func TestOpenDeck(t *testing.T) {
 }
 
 func TestDrawDeck(t *testing.T) {
+	newServer(t)
 	t.Run("draw cards from a deck", func(t *testing.T) {
 		expectedCards := []dto.CardDTO{
 			{
@@ -194,9 +178,6 @@ func TestDrawDeck(t *testing.T) {
 				Code:  "JD",
 			},
 		}
-		localServer := httptest.NewServer(s.Router)
-		s.CreateRoutes()
-		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
 		deck.GenerateNewUUID = func() string {
@@ -234,9 +215,6 @@ func TestDrawDeck(t *testing.T) {
 				Code:  "JD",
 			},
 		}
-		localServer := httptest.NewServer(s.Router)
-		s.CreateRoutes()
-		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
 		deck.GenerateNewUUID = func() string {
@@ -272,10 +250,6 @@ func TestDrawDeck(t *testing.T) {
 	})
 
 	t.Run("returns a not found error when draw cards from a nonexistent deck", func(t *testing.T) {
-		localServer := httptest.NewServer(s.Router)
-		s.CreateRoutes()
-		defer localServer.Close()
-
 		drawRequest := draw("7dd13273-fabb-4223-9df6-9646c9473810000", 2)
 		res := executeRequest(drawRequest)
 
@@ -283,10 +257,6 @@ func TestDrawDeck(t *testing.T) {
 	})
 
 	t.Run("returns a bad request error when draw cards from a passed deck", func(t *testing.T) {
-		localServer := httptest.NewServer(s.Router)
-		s.CreateRoutes()
-		defer localServer.Close()
-
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
 		deck.GenerateNewUUID = func() string {
@@ -330,6 +300,13 @@ func assertStatus(t *testing.T, got, want int) {
 	if got != want {
 		t.Errorf("did not get correct status, got %d, want %d", got, want)
 	}
+}
+
+func newServer(t *testing.T) {
+	t.Helper()
+	localServer := httptest.NewServer(s.Router)
+	s.CreateRoutes()
+	defer localServer.Close()
 }
 
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
