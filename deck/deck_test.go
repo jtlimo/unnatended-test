@@ -113,6 +113,22 @@ func TestNewDeckReturnsAnErrorWhenCreateAStandardDeck(t *testing.T) {
 	assert.EqualError(t, err, "cannot create a new standard deck")
 }
 
+func TestDeckDraw(t *testing.T) {
+	expectedCards := []card.Card{
+		card.Card{
+			Value: "ACE",
+			Suit:  "SPADES",
+			Code:  "AS",
+			Order: 0,
+		},
+	}
+	customDeck, _ := NewDeck([]string{"AS", "KD", "AC"}, false)
+
+	drawCard := customDeck.Draw(1)
+
+	assert.Equal(t, expectedCards, drawCard)
+}
+
 func assertDeckLength(t *testing.T, deck *Deck, want int) {
 	t.Helper()
 	got := len(deck.Cards)
