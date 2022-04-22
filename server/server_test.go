@@ -139,6 +139,29 @@ func TestOpenDeck(t *testing.T) {
 		assertStatus(t, res.Code, 200)
 	})
 
+	t.Run("returns not found when try to open a nonexistent deck", func(t *testing.T) {
+		router := s.Setup()
+		localServer := httptest.NewServer(router)
+		defer localServer.Close()
+
+		openRequest := open("7dd13273-fabb-4223-9df6-9646c9473891")
+
+		res := executeRequest(openRequest)
+
+		assertStatus(t, res.Code, 404)
+	})
+
+	//t.Run("returns bad request when try to open a deck without remaining cards", func(t *testing.T) {
+	//	router := s.Setup()
+	//	localServer := httptest.NewServer(router)
+	//	defer localServer.Close()
+	//
+	//	openRequest := open("7dd13273-fabb-4223-9df6-9646c9473891")
+	//
+	//	res := executeRequest(openRequest)
+	//
+	//	assertStatus(t, res.Code, 404)
+	//})
 }
 
 func create(shuffle string, cards ...string) *http.Request {

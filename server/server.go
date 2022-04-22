@@ -76,6 +76,11 @@ func (s *Server) openDeck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if d.Remaining < 1 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	payload, err := json.Marshal(dto.ToOpenDeck(d))
 
 	if err != nil {
