@@ -19,7 +19,7 @@ type CardDTO struct {
 
 type OpenDeckDTO struct {
 	DeckDTO
-	CardDTO []*CardDTO
+	CardDTO []*CardDTO `json:"cards"`
 }
 
 func ToDeck(d *deck.Deck) *DeckDTO {
