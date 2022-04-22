@@ -17,22 +17,10 @@ type Server struct {
 	Db     *database.Database
 }
 
-func (s *Server) Setup() *mux.Router {
-	s.Router = mux.NewRouter()
-	s.createRoutes()
-	s.initializeDB()
-
-	return s.Router
-}
-
-func (s *Server) createRoutes() {
+func (s *Server) CreateRoutes() {
 	s.Router.HandleFunc("/deck", s.createDeck).Methods("POST")
 	s.Router.HandleFunc("/deck/{uuid}", s.openDeck).Methods("GET")
 	s.Router.HandleFunc("/deck/{uuid}/{count}", s.draw).Methods("POST")
-}
-
-func (s *Server) initializeDB() {
-	s.Db = database.Init()
 }
 
 func (s *Server) createDeck(w http.ResponseWriter, r *http.Request) {

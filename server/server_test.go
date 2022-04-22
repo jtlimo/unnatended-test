@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http"
@@ -10,11 +11,15 @@ import (
 	"net/url"
 	"testing"
 	"unattended-test/card"
+	"unattended-test/database"
 	"unattended-test/deck"
 	"unattended-test/server/dto"
 )
 
-var s = Server{}
+var s = Server{
+	Router: mux.NewRouter(),
+	Db:     database.New(),
+}
 
 func TestCreateDeck(t *testing.T) {
 	t.Run("create a new standard Deck", func(t *testing.T) {
@@ -23,8 +28,8 @@ func TestCreateDeck(t *testing.T) {
 			Shuffled:  false,
 			Remaining: 52,
 		}
-		router := s.Setup()
-		localServer := httptest.NewServer(router)
+		localServer := httptest.NewServer(s.Router)
+		s.CreateRoutes()
 		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
@@ -51,8 +56,8 @@ func TestCreateDeck(t *testing.T) {
 			Shuffled:  false,
 			Remaining: 3,
 		}
-		router := s.Setup()
-		localServer := httptest.NewServer(router)
+		localServer := httptest.NewServer(s.Router)
+		s.CreateRoutes()
 		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
@@ -79,8 +84,8 @@ func TestCreateDeck(t *testing.T) {
 			Shuffled:  true,
 			Remaining: 3,
 		}
-		router := s.Setup()
-		localServer := httptest.NewServer(router)
+		localServer := httptest.NewServer(s.Router)
+		s.CreateRoutes()
 		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
@@ -113,8 +118,8 @@ func TestOpenDeck(t *testing.T) {
 			},
 			CardDTO: dto.ToCard(cards),
 		}
-		router := s.Setup()
-		localServer := httptest.NewServer(router)
+		localServer := httptest.NewServer(s.Router)
+		s.CreateRoutes()
 		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
@@ -140,8 +145,8 @@ func TestOpenDeck(t *testing.T) {
 	})
 
 	t.Run("returns not found when try to open a nonexistent deck", func(t *testing.T) {
-		router := s.Setup()
-		localServer := httptest.NewServer(router)
+		localServer := httptest.NewServer(s.Router)
+		s.CreateRoutes()
 		defer localServer.Close()
 
 		openRequest := open("7dd13273-fabb-4223-9df6-9646c9473891")
@@ -152,8 +157,8 @@ func TestOpenDeck(t *testing.T) {
 	})
 
 	t.Run("returns bad request when try to open a deck without remaining cards", func(t *testing.T) {
-		router := s.Setup()
-		localServer := httptest.NewServer(router)
+		localServer := httptest.NewServer(s.Router)
+		s.CreateRoutes()
 		defer localServer.Close()
 
 		var old = deck.GenerateNewUUID
@@ -189,8 +194,8 @@ func TestDrawDeck(t *testing.T) {
 				Code:  "JD",
 			},
 		}
-		router := s.Setup()
-		localServer := httptest.NewServer(router)
+		localServer := httptest.NewServer(s.Router)
+		s.CreateRoutes()
 		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
@@ -229,9 +234,8 @@ func TestDrawDeck(t *testing.T) {
 				Code:  "JD",
 			},
 		}
-
-		router := s.Setup()
-		localServer := httptest.NewServer(router)
+		localServer := httptest.NewServer(s.Router)
+		s.CreateRoutes()
 		defer localServer.Close()
 		var old = deck.GenerateNewUUID
 		defer func() { deck.GenerateNewUUID = old }()
@@ -268,8 +272,8 @@ func TestDrawDeck(t *testing.T) {
 	})
 
 	t.Run("returns a not found error when draw cards from a nonexistent deck", func(t *testing.T) {
-		router := s.Setup()
-		localServer := httptest.NewServer(router)
+		localServer := httptest.NewServer(s.Router)
+		s.CreateRoutes()
 		defer localServer.Close()
 
 		drawRequest := draw("7dd13273-fabb-4223-9df6-9646c9473810000", 2)
@@ -279,8 +283,8 @@ func TestDrawDeck(t *testing.T) {
 	})
 
 	t.Run("returns a bad request error when draw cards from a passed deck", func(t *testing.T) {
-		router := s.Setup()
-		localServer := httptest.NewServer(router)
+		localServer := httptest.NewServer(s.Router)
+		s.CreateRoutes()
 		defer localServer.Close()
 
 		var old = deck.GenerateNewUUID
