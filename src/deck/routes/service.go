@@ -28,6 +28,7 @@ func (s *Server) createDeck(w http.ResponseWriter, r *http.Request) {
 	cards := strings.Split(params.Get("cards"), ",")
 	shuffleStr := params.Get("shuffle")
 	shuffle := false
+	cards = sanitizeParams(cards)
 	var err error
 
 	if len(shuffleStr) > 0 {
@@ -102,4 +103,13 @@ func (s *Server) draw(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(payload)
+}
+
+func sanitizeParams(cards []string) []string {
+	var params []string
+	for _, card := range cards {
+		params = append(params, strings.ToUpper(card))
+	}
+
+	return params
 }
