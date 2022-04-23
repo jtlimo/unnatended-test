@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"unattended-test/domain/deck"
+	"unattended-test/src/deck/domain"
 )
 
 type DeckDTO struct {
@@ -10,7 +10,7 @@ type DeckDTO struct {
 	Remaining int    `json:"remaining"`
 }
 
-func ToDeck(d *deck.Deck) *DeckDTO {
+func ToDeck(d *domain.Deck) *DeckDTO {
 	return &DeckDTO{
 		Id:        d.Id,
 		Shuffled:  d.Shuffled,

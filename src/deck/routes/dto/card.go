@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"unattended-test/domain/card"
+	"unattended-test/src/card/domain"
 )
 
 type CardDTO struct {
@@ -10,7 +10,7 @@ type CardDTO struct {
 	Code  string `json:"code"`
 }
 
-func ToCard(cards []card.Card) []*CardDTO {
+func ToCard(cards []domain.Card) []*CardDTO {
 	cardDTO := make([]*CardDTO, 0)
 	for _, c := range cards {
 		cardDTO = append(cardDTO, &CardDTO{

@@ -1,13 +1,12 @@
-package deck
+package domain
 
 import (
-	"testing"
-	"unattended-test/domain/card"
-
 	"github.com/stretchr/testify/assert"
+	"testing"
+	"unattended-test/src/card/domain"
 )
 
-var expectedCards = []card.Card{
+var expectedCards = []domain.Card{
 	{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
 	{Value: "2", Suit: "SPADES", Code: "2S", Order: 1},
 	{Value: "3", Suit: "SPADES", Code: "3S", Order: 2},
@@ -74,7 +73,7 @@ func TestBuildStandardDeck(t *testing.T) {
 func TestBuildCustomDeck(t *testing.T) {
 	customDeck, _ := NewDeck([]string{"AS", "KD", "AC"}, false)
 
-	expectedCards := []card.Card{
+	expectedCards := []domain.Card{
 		{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
 		{Value: "KING", Suit: "DIAMONDS", Code: "KD", Order: 25},
 		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
@@ -90,7 +89,7 @@ func TestRemainingCardsFromACustomDeck(t *testing.T) {
 }
 
 func TestBuildShuffledDeck(t *testing.T) {
-	expectedCards := []card.Card{
+	expectedCards := []domain.Card{
 		{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
 		{Value: "KING", Suit: "DIAMONDS", Code: "KD", Order: 25},
 		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
@@ -111,22 +110,6 @@ func TestNewDeckReturnsAnErrorWhenCreateAStandardDeck(t *testing.T) {
 	_, err := sd.NewDeck([]string{}, false)
 
 	assert.EqualError(t, err, "cannot create a new standard deck")
-}
-
-func TestDeckDraw(t *testing.T) {
-	expectedCards := []card.Card{
-		card.Card{
-			Value: "ACE",
-			Suit:  "SPADES",
-			Code:  "AS",
-			Order: 0,
-		},
-	}
-	customDeck, _ := NewDeck([]string{"AS", "KD", "AC"}, false)
-
-	drawCard := customDeck.Draw(1)
-
-	assert.Equal(t, expectedCards, drawCard)
 }
 
 func assertDeckLength(t *testing.T, deck *Deck, want int) {

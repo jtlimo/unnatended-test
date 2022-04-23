@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"unattended-test/domain/deck"
+	"unattended-test/src/deck/domain"
 )
 
 type OpenDeckDTO struct {
@@ -9,7 +9,7 @@ type OpenDeckDTO struct {
 	CardDTO []*CardDTO `json:"cards"`
 }
 
-func ToOpenDeck(d *deck.Deck) *OpenDeckDTO {
+func ToOpenDeck(d *domain.Deck) *OpenDeckDTO {
 	return &OpenDeckDTO{
 		DeckDTO: *ToDeck(d),
 		CardDTO: ToCard(d.Cards),

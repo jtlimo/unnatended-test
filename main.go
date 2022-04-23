@@ -4,19 +4,22 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"unattended-test/database"
-	"unattended-test/server"
+	"unattended-test/src/deck/application"
+	"unattended-test/src/deck/infrastructure"
+	"unattended-test/src/deck/routes"
 )
 
 func main() {
 	router := mux.NewRouter()
-	db := database.New()
+	db := infrastructure.New()
+	deckUseCase := application.NewDeckUC(db)
 
-	srv := server.Server{
-		Router: router,
-		Db:     db,
+	srv := routes.Server{
+		Router:      router,
+		DeckUseCase: deckUseCase,
 	}
-	srv.CreateRoutes()
+
+	srv.Register()
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

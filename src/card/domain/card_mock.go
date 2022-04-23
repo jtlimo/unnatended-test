@@ -1,6 +1,8 @@
-package card
+package domain
 
-import "errors"
+import (
+	"errors"
+)
 
 type SpyCard struct {
 	Value string `json:"value"`
