@@ -30,12 +30,12 @@ func NewDeck(cards []string, shuffle bool) (*Deck, error) {
 	isCustomDeck := len(cards) > 0 && cards[0] != ""
 
 	if isCustomDeck {
-		builtCards, err = domain.NewCard(cards)
+		builtCards, err = domain.New(cards)
 		if err != nil {
 			return nil, errors.New("cannot create a new custom deck")
 		}
 	} else {
-		builtCards, err = domain.NewCard(domain.StandardCardsCodes)
+		builtCards, err = domain.New(domain.StandardCardsCodes)
 		if err != nil {
 			return nil, errors.New("cannot create a new standard deck")
 		}

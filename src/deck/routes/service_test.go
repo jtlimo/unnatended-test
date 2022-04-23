@@ -100,7 +100,7 @@ func TestOpenDeck(t *testing.T) {
 	defer func() { deck.GenerateNewUUID = old }()
 
 	t.Run("open an existent deck", func(t *testing.T) {
-		cards, _ := domain.NewCard([]string{"AS", "JD", "QH"})
+		cards, _ := domain.New([]string{"AS", "JD", "QH"})
 		expectedDeck := dto2.OpenDeckDTO{
 			DeckDTO: dto2.DeckDTO{
 				Id:        "7dd13273-fabb-4223-9df6-9646c9473890",

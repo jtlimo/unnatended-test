@@ -19,12 +19,12 @@ func (sd *SpyDeck) NewDeck(cards []string, shuffle bool) (*Deck, error) {
 	isCustomDeck := len(cards) > 0 && cards[0] != ""
 
 	if isCustomDeck {
-		builtCards, err = sd.card.NewCard(cards)
+		builtCards, err = sd.card.New(cards)
 		if err != nil {
 			return nil, errors.New("cannot create a new custom deck")
 		}
 	} else {
-		builtCards, err = sd.card.NewCard(domain2.StandardCardsCodes)
+		builtCards, err = sd.card.New(domain2.StandardCardsCodes)
 		if err != nil {
 			return nil, errors.New("cannot create a new standard deck")
 		}

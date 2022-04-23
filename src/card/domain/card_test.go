@@ -6,7 +6,7 @@ import (
 )
 
 func TestBuildCard(t *testing.T) {
-	card, err := NewCard([]string{"QH"})
+	card, err := New([]string{"QH"})
 
 	assertCardBuild(t, card[0].Value, "QUEEN")
 	assertCardBuild(t, card[0].Suit, "HEARTS")
@@ -15,7 +15,7 @@ func TestBuildCard(t *testing.T) {
 }
 
 func TestBuildMultipleCards(t *testing.T) {
-	cards, err := NewCard([]string{"QH", "JD"})
+	cards, err := New([]string{"QH", "JD"})
 
 	fmt.Println(cards)
 	assertCardBuild(t, cards[0].Value, "QUEEN")
@@ -28,14 +28,14 @@ func TestBuildMultipleCards(t *testing.T) {
 	assertError(t, err, "")
 }
 
-func TestBuildCardWhenCodeIsInexistent(t *testing.T) {
-	_, err := NewCard([]string{"LUI"})
+func TestBuildCardWhenCodeIsNonExistent(t *testing.T) {
+	_, err := New([]string{"LUI"})
 
 	assertError(t, err, "cannot create a card with this code")
 }
 
 func TestBuildCardWithoutCode(t *testing.T) {
-	card, err := NewCard([]string{})
+	card, err := New([]string{})
 
 	assertCardLength(t, card, 0)
 	assertError(t, err, "")

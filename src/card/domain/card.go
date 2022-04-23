@@ -12,7 +12,7 @@ type Card struct {
 }
 
 type Carder interface {
-	NewCard(cardCodes []string) ([]Card, error)
+	New(cardCodes []string) ([]Card, error)
 }
 
 var StandardCards = map[string]Card{
@@ -72,7 +72,7 @@ var StandardCards = map[string]Card{
 
 var StandardCardsCodes = getStandardCardCodes()
 
-func NewCard(cardCodes []string) ([]Card, error) {
+func New(cardCodes []string) ([]Card, error) {
 	var cards []Card
 	var err error
 

@@ -11,6 +11,6 @@ type SpyCard struct {
 	Order int
 }
 
-func (c *SpyCard) NewCard(cardCodes []string) ([]Card, error) {
+func (c *SpyCard) New(cardCodes []string) ([]Card, error) {
 	return nil, errors.New("cannot create a card with this code")
 }
