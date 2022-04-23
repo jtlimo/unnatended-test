@@ -45,10 +45,10 @@ func TestDeckDraw(t *testing.T) {
 	})
 }
 
-func TestDeckGet(t *testing.T) {
+func TestDeckOpen(t *testing.T) {
 	var old = deck.GenerateNewUUID
 	defer func() { deck.GenerateNewUUID = old }()
-	t.Run("get a specific deck successfully", func(t *testing.T) {
+	t.Run("open a specific deck successfully", func(t *testing.T) {
 		uuid := generateUUID("47cf6322-da5a-4dbd-998f-01fcd6a849e6")()
 		expectedDeck := &deck.Deck{
 			Id:        uuid,
@@ -64,7 +64,7 @@ func TestDeckGet(t *testing.T) {
 		customDeck, _ := deck.New([]string{"QH"}, false)
 		useCase.Create(customDeck)
 
-		d, _ := useCase.Get(uuid)
+		d, _ := useCase.Open(uuid)
 
 		assert.Equal(t, expectedDeck, d)
 		assert.Len(t, d.Cards, 1)

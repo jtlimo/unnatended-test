@@ -62,7 +62,7 @@ func (s *Server) openDeck(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uuid := vars["uuid"]
 
-	d, err := s.DeckUseCase.Get(uuid)
+	d, err := s.DeckUseCase.Open(uuid)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return

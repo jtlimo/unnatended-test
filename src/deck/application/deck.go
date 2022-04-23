@@ -15,7 +15,7 @@ type DeckerUseCase interface {
 	NewDeckUC(db *infrastructure.Database) *DeckUC
 	Draw(quantity int, deckUUID string) ([]domain.Card, error)
 	Create(deck *deck.Deck)
-	Get(deckUUID string) (*deck.Deck, error)
+	Open(deckUUID string) (*deck.Deck, error)
 }
 
 func NewDeckUC(db *infrastructure.Database) *DeckUC {
@@ -25,7 +25,7 @@ func NewDeckUC(db *infrastructure.Database) *DeckUC {
 }
 
 func (uc *DeckUC) Draw(quantity int, deckUUID string) ([]domain.Card, error) {
-	d, err := uc.Get(deckUUID)
+	d, err := uc.Open(deckUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (uc *DeckUC) Create(deck *deck.Deck) {
 	uc.db.Insert(deck)
 }
 
-func (uc *DeckUC) Get(deckUUID string) (*deck.Deck, error) {
+func (uc *DeckUC) Open(deckUUID string) (*deck.Deck, error) {
 	d, err := uc.db.GetByDeckId(deckUUID)
 	if err != nil {
 		return nil, err
