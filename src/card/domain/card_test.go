@@ -1,44 +1,44 @@
 package domain
 
 import (
-	"fmt"
 	"testing"
 )
 
-func TestBuildCard(t *testing.T) {
-	card, err := New([]string{"QH"})
+func TestNew(t *testing.T) {
+	t.Run("build card successfully", func(t *testing.T) {
+		card, err := New([]string{"QH"})
 
-	assertCardBuild(t, card[0].Value, "QUEEN")
-	assertCardBuild(t, card[0].Suit, "HEARTS")
-	assertCardBuild(t, card[0].Code, "QH")
-	assertError(t, err, "")
-}
+		assertCardBuild(t, card[0].Value, "QUEEN")
+		assertCardBuild(t, card[0].Suit, "HEARTS")
+		assertCardBuild(t, card[0].Code, "QH")
+		assertError(t, err, "")
+	})
 
-func TestBuildMultipleCards(t *testing.T) {
-	cards, err := New([]string{"QH", "JD"})
+	t.Run("build multiple cards", func(t *testing.T) {
+		cards, err := New([]string{"QH", "JD"})
 
-	fmt.Println(cards)
-	assertCardBuild(t, cards[0].Value, "QUEEN")
-	assertCardBuild(t, cards[0].Suit, "HEARTS")
-	assertCardBuild(t, cards[0].Code, "QH")
+		assertCardBuild(t, cards[0].Value, "QUEEN")
+		assertCardBuild(t, cards[0].Suit, "HEARTS")
+		assertCardBuild(t, cards[0].Code, "QH")
 
-	assertCardBuild(t, cards[1].Value, "JACK")
-	assertCardBuild(t, cards[1].Suit, "DIAMONDS")
-	assertCardBuild(t, cards[1].Code, "JD")
-	assertError(t, err, "")
-}
+		assertCardBuild(t, cards[1].Value, "JACK")
+		assertCardBuild(t, cards[1].Suit, "DIAMONDS")
+		assertCardBuild(t, cards[1].Code, "JD")
+		assertError(t, err, "")
+	})
 
-func TestBuildCardWhenCodeIsNonExistent(t *testing.T) {
-	_, err := New([]string{"LUI"})
+	t.Run("returns an error when build a card with a nonexistent code", func(t *testing.T) {
+		_, err := New([]string{"LUI"})
 
-	assertError(t, err, "cannot create a card with this code")
-}
+		assertError(t, err, "cannot create a card with this code")
+	})
 
-func TestBuildCardWithoutCode(t *testing.T) {
-	card, err := New([]string{})
+	t.Run("returns an empty card object when build without a code", func(t *testing.T) {
+		card, err := New([]string{})
 
-	assertCardLength(t, card, 0)
-	assertError(t, err, "")
+		assertCardLength(t, card, 0)
+		assertError(t, err, "")
+	})
 }
 
 func assertCardLength(t *testing.T, card []Card, expected int) {
