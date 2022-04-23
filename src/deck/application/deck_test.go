@@ -21,7 +21,7 @@ func TestDeckDraw(t *testing.T) {
 				Order: 0,
 			},
 		}
-		customDeck, _ := deck.NewDeck([]string{"AS", "KD", "AC"}, false)
+		customDeck, _ := deck.New([]string{"AS", "KD", "AC"}, false)
 		useCase.Create(customDeck)
 
 		drawCard, _ := useCase.Draw(1, customDeck.Id)
@@ -34,7 +34,7 @@ func TestDeckDraw(t *testing.T) {
 		assert.EqualError(t, err, "deck not found")
 	})
 	t.Run("return an error when try to draw from a deck without remaining cards", func(t *testing.T) {
-		customDeck, _ := deck.NewDeck([]string{"AS", "KD"}, false)
+		customDeck, _ := deck.New([]string{"AS", "KD"}, false)
 		useCase.Create(customDeck)
 		useCase.Draw(1, customDeck.Id)
 		useCase.Draw(1, customDeck.Id)
@@ -61,7 +61,7 @@ func TestDeckGet(t *testing.T) {
 				Order: 50,
 			}},
 		}
-		customDeck, _ := deck.NewDeck([]string{"QH"}, false)
+		customDeck, _ := deck.New([]string{"QH"}, false)
 		useCase.Create(customDeck)
 
 		d, _ := useCase.Get(uuid)

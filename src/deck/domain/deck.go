@@ -16,15 +16,13 @@ type Deck struct {
 }
 
 type Decker interface {
-	NewDeck(cards []string, shuffle bool) (*Deck, error)
-	Draw(quantity int, deck Deck) (c []domain.Card, d Deck)
-	Open(duuid uuid.UUID) (*Deck, error)
+	New(cards []string, shuffle bool) (*Deck, error)
 }
 
 var GenerateNewUUID = uuid.NewString
 var err error
 
-func NewDeck(cards []string, shuffle bool) (*Deck, error) {
+func New(cards []string, shuffle bool) (*Deck, error) {
 	duuid := GenerateNewUUID()
 	var builtCards []domain.Card
 	isCustomDeck := len(cards) > 0 && cards[0] != ""

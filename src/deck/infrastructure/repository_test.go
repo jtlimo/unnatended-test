@@ -24,7 +24,7 @@ func TestGetByDeckId(t *testing.T) {
 	deck.GenerateNewUUID = func() string {
 		return "a9ad2ba2-6ed0-4417-9d27-c695cb917869"
 	}
-	d, _ := deck.NewDeck([]string{"AC", "KH"}, false)
+	d, _ := deck.New([]string{"AC", "KH"}, false)
 
 	repo.Insert(d)
 

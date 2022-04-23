@@ -11,6 +11,13 @@ type DeckUC struct {
 	db *infrastructure.Database
 }
 
+type DeckerUseCase interface {
+	NewDeckUC(db *infrastructure.Database) *DeckUC
+	Draw(quantity int, deckUUID string) ([]domain.Card, error)
+	Create(deck *deck.Deck)
+	Get(deckUUID string) (*deck.Deck, error)
+}
+
 func NewDeckUC(db *infrastructure.Database) *DeckUC {
 	return &DeckUC{
 		db: db,

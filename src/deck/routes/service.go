@@ -39,7 +39,7 @@ func (s *Server) createDeck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	d, err := domain.NewDeck(cards, shuffle)
+	d, err := domain.New(cards, shuffle)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
