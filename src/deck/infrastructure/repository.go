@@ -12,28 +12,28 @@ type DeckRepository interface {
 	Insert(deck *domain.Deck)
 }
 
-type Database struct {
+type Repository struct {
 	db map[string]*domain.Deck
 	mu sync.Mutex
 }
 
-func New() (db *Database) {
-	return &Database{
+func New() (db *Repository) {
+	return &Repository{
 		db: make(map[string]*domain.Deck),
 	}
 }
 
-func (d *Database) Insert(deck *domain.Deck) {
+func (d *Repository) Insert(deck *domain.Deck) {
 	d.mu.Lock()
 	d.db[deck.Id] = deck
 	d.mu.Unlock()
 }
 
-func (d *Database) Get() map[string]*domain.Deck {
+func (d *Repository) Get() map[string]*domain.Deck {
 	return d.db
 }
 
-func (d *Database) GetByDeckId(deckId string) (*domain.Deck, error) {
+func (d *Repository) GetByDeckId(deckId string) (*domain.Deck, error) {
 	if foundDeck, exists := d.db[deckId]; exists {
 		return foundDeck, nil
 	}

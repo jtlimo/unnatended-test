@@ -8,17 +8,17 @@ import (
 )
 
 type DeckUC struct {
-	db *infrastructure.Database
+	db *infrastructure.Repository
 }
 
 type DeckerUseCase interface {
-	NewDeckUC(db *infrastructure.Database) *DeckUC
+	NewDeckUC(db *infrastructure.Repository) *DeckUC
 	Draw(quantity int, deckUUID string) ([]domain.Card, error)
 	Create(deck *deck.Deck)
 	Open(deckUUID string) (*deck.Deck, error)
 }
 
-func NewDeckUC(db *infrastructure.Database) *DeckUC {
+func NewDeckUC(db *infrastructure.Repository) *DeckUC {
 	return &DeckUC{
 		db: db,
 	}
