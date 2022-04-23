@@ -1,6 +1,8 @@
 package dto
 
-import "unattended-test/card"
+import (
+	"unattended-test/domain/card"
+)
 
 type CardDTO struct {
 	Value string `json:"value"`

@@ -3,7 +3,7 @@ package database
 import (
 	"errors"
 	"sync"
-	"unattended-test/deck"
+	"unattended-test/domain/deck"
 )
 
 type Database struct {

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"unattended-test/database"
-	"unattended-test/deck"
+	"unattended-test/domain/deck"
 	"unattended-test/server/dto"
 )
 

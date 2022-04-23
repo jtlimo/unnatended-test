@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"unattended-test/deck"
+	"unattended-test/domain/deck"
 )
 
 type DeckDTO struct {

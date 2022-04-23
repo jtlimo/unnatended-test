@@ -2,8 +2,8 @@ package database
 
 import (
 	"testing"
-	"unattended-test/card"
-	"unattended-test/deck"
+	"unattended-test/domain/card"
+	"unattended-test/domain/deck"
 
 	"github.com/stretchr/testify/assert"
 )

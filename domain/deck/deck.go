@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 	"math/rand"
 	"sort"
-	"unattended-test/card"
+	"unattended-test/domain/card"
 )
 
 type Deck struct {

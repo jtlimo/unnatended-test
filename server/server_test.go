@@ -10,9 +10,9 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
-	"unattended-test/card"
 	"unattended-test/database"
-	"unattended-test/deck"
+	"unattended-test/domain/card"
+	"unattended-test/domain/deck"
 	"unattended-test/server/dto"
 )
 

@@ -1,6 +1,8 @@
 package dto
 
-import "unattended-test/deck"
+import (
+	"unattended-test/domain/deck"
+)
 
 type OpenDeckDTO struct {
 	DeckDTO
