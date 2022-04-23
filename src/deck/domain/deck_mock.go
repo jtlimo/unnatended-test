@@ -2,20 +2,20 @@ package domain
 
 import (
 	"errors"
-	domain2 "unattended-test/src/card/domain"
+	"unattended-test/src/card/domain"
 )
 
 type SpyDeck struct {
 	Id        string
 	Shuffled  bool
 	Remaining int
-	Cards     []domain2.Card
-	card      domain2.SpyCard
+	Cards     []domain.Card
+	card      domain.SpyCard
 }
 
-func (sd *SpyDeck) NewDeck(cards []string, shuffle bool) (*Deck, error) {
+func (sd *SpyDeck) New(cards []string, shuffle bool) (*Deck, error) {
 	duuid := GenerateNewUUID()
-	var builtCards []domain2.Card
+	var builtCards []domain.Card
 	isCustomDeck := len(cards) > 0 && cards[0] != ""
 
 	if isCustomDeck {
@@ -24,7 +24,7 @@ func (sd *SpyDeck) NewDeck(cards []string, shuffle bool) (*Deck, error) {
 			return nil, errors.New("cannot create a new custom deck")
 		}
 	} else {
-		builtCards, err = sd.card.New(domain2.StandardCardsCodes)
+		builtCards, err = sd.card.New(domain.StandardCardsCodes)
 		if err != nil {
 			return nil, errors.New("cannot create a new standard deck")
 		}
