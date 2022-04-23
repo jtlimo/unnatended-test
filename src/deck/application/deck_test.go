@@ -48,7 +48,6 @@ func TestDeckDraw(t *testing.T) {
 func TestDeckGet(t *testing.T) {
 	var old = deck.GenerateNewUUID
 	defer func() { deck.GenerateNewUUID = old }()
-
 	t.Run("get a specific deck successfully", func(t *testing.T) {
 		uuid := generateUUID("47cf6322-da5a-4dbd-998f-01fcd6a849e6")()
 		expectedDeck := &deck.Deck{
