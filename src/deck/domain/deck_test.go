@@ -63,53 +63,52 @@ var expectedCards = []domain.Card{
 
 var sd SpyDeck
 
-func TestBuildStandardDeck(t *testing.T) {
-	defaultDeck, _ := New([]string{}, false)
+func TestNew(t *testing.T) {
+	t.Run("build a standard deck successfully", func(t *testing.T) {
+		defaultDeck, _ := New([]string{}, false)
 
-	assert.Equal(t, expectedCards, defaultDeck.Cards)
-	assertDeckLength(t, defaultDeck, 52)
-}
+		assert.Equal(t, expectedCards, defaultDeck.Cards)
+		assertDeckLength(t, defaultDeck, 52)
 
-func TestBuildCustomDeck(t *testing.T) {
-	customDeck, _ := New([]string{"AS", "KD", "AC"}, false)
+	})
 
-	expectedCards := []domain.Card{
-		{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
-		{Value: "KING", Suit: "DIAMONDS", Code: "KD", Order: 25},
-		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
-	}
-	assert.ElementsMatch(t, expectedCards, customDeck.Cards)
-	assertDeckLength(t, customDeck, 3)
-}
+	t.Run("build a custom deck", func(t *testing.T) {
+		customDeck, _ := New([]string{"AS", "KD", "AC"}, false)
+		expectedCards := []domain.Card{
+			{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
+			{Value: "KING", Suit: "DIAMONDS", Code: "KD", Order: 25},
+			{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
+		}
 
-func TestRemainingCardsFromACustomDeck(t *testing.T) {
-	customDeck, _ := New([]string{"AS", "KD", "AC"}, false)
+		assert.Equal(t, expectedCards, customDeck.Cards)
+		assertDeckLength(t, customDeck, 3)
+		assertDeckRemainingCards(t, customDeck, 3)
+	})
 
-	assertDeckRemainingCards(t, customDeck, 3)
-}
+	t.Run("build a shuffled deck", func(t *testing.T) {
+		expectedCards := []domain.Card{
+			{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
+			{Value: "KING", Suit: "DIAMONDS", Code: "KD", Order: 25},
+			{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
+			{Value: "JACK", Suit: "CLUBS", Code: "JC", Order: 36},
+		}
+		customDeck, _ := New([]string{"AS", "KD", "AC", "JC"}, true)
 
-func TestBuildShuffledDeck(t *testing.T) {
-	expectedCards := []domain.Card{
-		{Value: "ACE", Suit: "SPADES", Code: "AS", Order: 0},
-		{Value: "KING", Suit: "DIAMONDS", Code: "KD", Order: 25},
-		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
-		{Value: "JACK", Suit: "CLUBS", Code: "JC", Order: 36},
-	}
-	customDeck, _ := New([]string{"AS", "KD", "AC", "JC"}, true)
+		assert.ElementsMatch(t, expectedCards, customDeck.Cards)
+	})
 
-	assert.ElementsMatch(t, expectedCards, customDeck.Cards)
-}
+	t.Run("returns an error when create a custom deck with invalid cards", func(t *testing.T) {
+		_, err := New([]string{"JJ"}, false)
 
-func TestNewDeckReturnsAnErrorWhenCreateACustomDeck(t *testing.T) {
-	_, err := New([]string{"JJ"}, false)
+		assert.EqualError(t, err, "cannot create a new custom deck")
+	})
 
-	assert.EqualError(t, err, "cannot create a new custom deck")
-}
+	t.Run("returns an error when create a standard deck", func(t *testing.T) {
+		_, err := sd.New([]string{}, false)
 
-func TestNewDeckReturnsAnErrorWhenCreateAStandardDeck(t *testing.T) {
-	_, err := sd.NewDeck([]string{}, false)
+		assert.EqualError(t, err, "cannot create a new standard deck")
 
-	assert.EqualError(t, err, "cannot create a new standard deck")
+	})
 }
 
 func assertDeckLength(t *testing.T, deck *Deck, want int) {
