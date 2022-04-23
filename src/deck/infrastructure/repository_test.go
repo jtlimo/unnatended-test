@@ -7,47 +7,46 @@ import (
 	deck "unattended-test/src/deck/domain"
 )
 
-func TestGetByDeckId(t *testing.T) {
-	repo := New()
-	cards := []domain.Card{
-		{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
-		{Value: "KING", Suit: "HEARTS", Code: "KH", Order: 51},
-	}
-	expectedDeck := &deck.Deck{
-		Id:        "a9ad2ba2-6ed0-4417-9d27-c695cb917869",
-		Shuffled:  false,
-		Remaining: 2,
-		Cards:     cards,
-	}
+func TestGetById(t *testing.T) {
 	var old = deck.GenerateNewUUID
 	defer func() { deck.GenerateNewUUID = old }()
-	deck.GenerateNewUUID = func() string {
-		return "a9ad2ba2-6ed0-4417-9d27-c695cb917869"
-	}
-	d, _ := deck.New([]string{"AC", "KH"}, false)
 
-	repo.Insert(d)
+	t.Run("returns a specific deck", func(t *testing.T) {
+		repo := New()
+		uuid := generateUUID(t, "a9ad2ba2-6ed0-4417-9d27-c695cb917869")()
+		cards := []domain.Card{
+			{Value: "ACE", Suit: "CLUBS", Code: "AC", Order: 26},
+			{Value: "KING", Suit: "HEARTS", Code: "KH", Order: 51},
+		}
+		expectedDeck := &deck.Deck{
+			Id:        uuid,
+			Shuffled:  false,
+			Remaining: 2,
+			Cards:     cards,
+		}
 
-	dc, err := repo.GetByDeckId("a9ad2ba2-6ed0-4417-9d27-c695cb917869")
+		d, _ := deck.New([]string{"AC", "KH"}, false)
+		repo.Insert(d)
 
-	assert.NoError(t, err)
-	if assert.NotEmpty(t, dc) || assert.NotNil(t, dc) {
-		assert.Equal(t, expectedDeck, dc)
-	}
+		dc, err := repo.GetByDeckId(uuid)
+
+		assert.NoError(t, err)
+		if assert.NotEmpty(t, dc) || assert.NotNil(t, dc) {
+			assert.Equal(t, expectedDeck, dc)
+		}
+	})
+
+	t.Run("returns an error when deck not found", func(t *testing.T) {
+		repo := New()
+
+		_, err := repo.GetByDeckId("a9ad2ba2-6ed0-4417-9d27-c695cb917869")
+
+		assert.Error(t, err, "deck not found")
+	})
 }
 
-func TestReturnErrorWhenDeckNotFound(t *testing.T) {
-	repo := New()
-	d := &deck.Deck{
-		Id:        "a9ad2ba2-6ed0-4417-9d27-a9ad2ba2",
-		Remaining: 10,
-		Shuffled:  false,
-		Cards:     []domain.Card{},
-	}
-
-	repo.Insert(d)
-
-	_, err := repo.GetByDeckId("a9ad2ba2-6ed0-4417-9d27-c695cb917869")
-
-	assert.Error(t, err, "deck not found")
+func generateUUID(t *testing.T, uuid string) func() string {
+	t.Helper()
+	deck.GenerateNewUUID = func() string { return uuid }
+	return deck.GenerateNewUUID
 }
