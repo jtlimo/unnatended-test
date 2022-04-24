@@ -1,4 +1,5 @@
 start:
+	make build
 	go run main.go
 build:
 	go build
