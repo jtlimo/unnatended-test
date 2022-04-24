@@ -21,5 +21,5 @@ func main() {
 
 	srv.Register()
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":3000", router))
 }
