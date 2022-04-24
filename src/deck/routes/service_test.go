@@ -14,7 +14,7 @@ import (
 	"unattended-test/src/deck/application"
 	deck "unattended-test/src/deck/domain"
 	"unattended-test/src/deck/infrastructure"
-	dto2 "unattended-test/src/deck/routes/dto"
+	"unattended-test/src/deck/routes/dto"
 )
 
 var s = Server{
@@ -28,7 +28,7 @@ func TestCreateDeck(t *testing.T) {
 	defer func() { deck.GenerateNewUUID = old }()
 
 	t.Run("create a new standard Deck", func(t *testing.T) {
-		expectedDeck := dto2.DeckDTO{
+		expectedDeck := dto.DeckDTO{
 			Id:        "7dd13273-fabb-4223-9df6-9646c9473880",
 			Shuffled:  false,
 			Remaining: 52,
@@ -40,7 +40,7 @@ func TestCreateDeck(t *testing.T) {
 
 		payload, _ := ioutil.ReadAll(res.Body)
 
-		var jsonData dto2.DeckDTO
+		var jsonData dto.DeckDTO
 		json.Unmarshal(payload, &jsonData)
 
 		if assert.NotNil(t, jsonData) {
@@ -50,7 +50,7 @@ func TestCreateDeck(t *testing.T) {
 	})
 
 	t.Run("create a new custom Deck", func(t *testing.T) {
-		expectedDeck := dto2.DeckDTO{
+		expectedDeck := dto.DeckDTO{
 			Id:        "7dd13273-fabb-4223-9df6-9646c9473881",
 			Shuffled:  false,
 			Remaining: 3,
@@ -62,7 +62,7 @@ func TestCreateDeck(t *testing.T) {
 
 		payload, _ := ioutil.ReadAll(res.Body)
 
-		var jsonData dto2.DeckDTO
+		var jsonData dto.DeckDTO
 		json.Unmarshal(payload, &jsonData)
 
 		if assert.NotNil(t, jsonData) {
@@ -72,7 +72,7 @@ func TestCreateDeck(t *testing.T) {
 	})
 
 	t.Run("create a shuffled Deck", func(t *testing.T) {
-		expectedDeck := dto2.DeckDTO{
+		expectedDeck := dto.DeckDTO{
 			Id:        "7dd13273-fabb-4223-9df6-9646c9473882",
 			Shuffled:  true,
 			Remaining: 3,
@@ -84,7 +84,7 @@ func TestCreateDeck(t *testing.T) {
 
 		payload, _ := ioutil.ReadAll(res.Body)
 
-		var jsonData dto2.DeckDTO
+		var jsonData dto.DeckDTO
 		json.Unmarshal(payload, &jsonData)
 
 		if assert.NotNil(t, jsonData) {
@@ -101,13 +101,13 @@ func TestOpenDeck(t *testing.T) {
 
 	t.Run("open an existent deck", func(t *testing.T) {
 		cards, _ := domain.New([]string{"AS", "JD", "QH"})
-		expectedDeck := dto2.OpenDeckDTO{
-			DeckDTO: dto2.DeckDTO{
+		expectedDeck := dto.OpenDeckDTO{
+			DeckDTO: dto.DeckDTO{
 				Id:        "7dd13273-fabb-4223-9df6-9646c9473890",
 				Shuffled:  false,
 				Remaining: 3,
 			},
-			CardDTO: dto2.ToCard(cards),
+			CardDTO: dto.ToCard(cards),
 		}
 		generateUUID(t, "7dd13273-fabb-4223-9df6-9646c9473890")()
 
@@ -119,7 +119,7 @@ func TestOpenDeck(t *testing.T) {
 
 		payload, _ := ioutil.ReadAll(res.Body)
 
-		var jsonData dto2.OpenDeckDTO
+		var jsonData dto.OpenDeckDTO
 		json.Unmarshal(payload, &jsonData)
 
 		if assert.NotNil(t, jsonData) {
@@ -155,7 +155,7 @@ func TestDrawDeck(t *testing.T) {
 	defer func() { deck.GenerateNewUUID = old }()
 
 	t.Run("draw cards from a deck", func(t *testing.T) {
-		expectedCards := []dto2.CardDTO{
+		expectedCards := dto.CardsDTO{CardDTO: []*dto.CardDTO{
 			{
 				Value: "ACE",
 				Suit:  "SPADES",
@@ -166,7 +166,7 @@ func TestDrawDeck(t *testing.T) {
 				Suit:  "DIAMONDS",
 				Code:  "JD",
 			},
-		}
+		}}
 		generateUUID(t, "7dd13273-fabb-4223-9df6-9646c9473810")
 		request := create("false", "AS,JD,QH")
 		executeRequest(request)
@@ -176,7 +176,7 @@ func TestDrawDeck(t *testing.T) {
 
 		payload, _ := ioutil.ReadAll(res.Body)
 
-		var jsonData []dto2.CardDTO
+		var jsonData dto.CardsDTO
 		json.Unmarshal(payload, &jsonData)
 
 		if assert.NotNil(t, jsonData) {

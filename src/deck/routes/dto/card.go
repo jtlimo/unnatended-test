@@ -10,6 +10,10 @@ type CardDTO struct {
 	Code  string `json:"code"`
 }
 
+type CardsDTO struct {
+	CardDTO []*CardDTO `json:"cards"`
+}
+
 func ToCard(cards []domain.Card) []*CardDTO {
 	cardDTO := make([]*CardDTO, 0)
 	for _, c := range cards {
@@ -20,4 +24,8 @@ func ToCard(cards []domain.Card) []*CardDTO {
 		})
 	}
 	return cardDTO
+}
+
+func ToCards(cards []domain.Card) *CardsDTO {
+	return &CardsDTO{ToCard(cards)}
 }

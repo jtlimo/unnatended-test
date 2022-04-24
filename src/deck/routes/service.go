@@ -95,7 +95,7 @@ func (s *Server) draw(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	payload, err := json.Marshal(dto.ToCard(cards))
+	payload, err := json.Marshal(dto.ToCards(cards))
 
 	if err != nil {
 		fmt.Println("unable to encode json")
