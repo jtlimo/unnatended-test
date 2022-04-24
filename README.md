@@ -93,7 +93,7 @@ $ curl -X POST --url "localhost:3000/deck/e7cb2982-6e76-49c0-a87c-1f95dffb5e2c/1
 
 ---
 
-##How to run the project
+## How to run the project
 
 #### Build project
 ```console
@@ -108,7 +108,7 @@ _The API will start in the port 3000_
 
 ---
 
-###_If you would like to run the tests_
+> ### _If you would like to run the tests_
 #### Run tests
 ```console
 $ make test
